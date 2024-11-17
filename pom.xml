@@ -12,7 +12,7 @@
 	<artifactId>CultureBooking</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>CultureBooking</name>
-	<description>Reserv seats to Culture Events</description>
+	<description>Reserve seats to Culture Events</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -33,6 +33,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -64,6 +68,18 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>io.hypersistence</groupId>
+			<artifactId>hypersistence-utils-hibernate-63</artifactId>
+			<version>3.7.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.nayuki</groupId>
+			<artifactId>qrcodegen</artifactId>
+			<version>1.8.0</version>
 		</dependency>
 	</dependencies>
 
