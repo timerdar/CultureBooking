@@ -76,4 +76,16 @@ public class EventController{
         }
     }
 
+    @GetMapping("/{id}/categories")
+    public ResponseEntity<?> getCategories(@PathVariable Long id){
+        if (!eventRepository.existsById(id)){
+            return ResponseEntity.notFound().build();
+        }
+        List<String> categories = eventRepository.getEventCategories(id);
+        if (categories.isEmpty()){
+            return ResponseEntity.badRequest().body(new MessageResponse("Категории не заполнены. Обратитесь к Администратору"));
+        }else{
+            return ResponseEntity.ok(categories);
+        }
+    }
 }
