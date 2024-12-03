@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Type;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Entity
@@ -29,6 +30,6 @@ public class Event {
 
     @Type(JsonType.class) // Указываем использование JSON-типа Hibernate
     @Column(columnDefinition = "jsonb") // Используем jsonb для хранения данных
-    private Map<String, Object> seats;
+    private List<Map<String, Object>> seats;
 
 }

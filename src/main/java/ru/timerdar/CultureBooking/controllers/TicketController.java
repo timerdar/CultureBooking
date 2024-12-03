@@ -1,6 +1,7 @@
 package ru.timerdar.CultureBooking.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -69,9 +70,9 @@ public class TicketController {
 
 
     @GetMapping(value = "/generate/qr/{uuid}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<?> getTicketQr(@PathVariable UUID uuid){
+    public ResponseEntity<?> getTicketQr(@PathVariable UUID uuid, @Value("${ru.timerdar.ticket.uri}") String uri){
         try{
-            QrGenerator qrGenerator = new QrGenerator("http://192.168.1.103:8080/api/tickets/");
+            QrGenerator qrGenerator = new QrGenerator(uri);
             byte[] image = qrGenerator.generateTicketQrImage(uuid);
             return ResponseEntity.ok(image);
         }catch (Exception e){

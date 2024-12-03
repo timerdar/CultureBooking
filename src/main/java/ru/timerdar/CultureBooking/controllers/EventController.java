@@ -5,6 +5,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.timerdar.CultureBooking.entities.Event;
+import ru.timerdar.CultureBooking.entities.LiteEvent;
 import ru.timerdar.CultureBooking.entities.Ticket;
 import ru.timerdar.CultureBooking.repositories.EventRepository;
 import ru.timerdar.CultureBooking.repositories.TicketRepository;
@@ -34,8 +35,8 @@ public class EventController{
     }
 
     @GetMapping
-    public ResponseEntity<List<Event>> getEventsList(){
-        return ResponseEntity.ok(eventRepository.findAll(Sort.by(Sort.Direction.DESC, "eventDate")));
+    public ResponseEntity<List<LiteEvent>> getEventsList(){
+        return ResponseEntity.ok(eventRepository.findAllLiteEvents(Sort.by(Sort.Direction.DESC, "eventDate")));
     }
 
     @GetMapping("/{id}")
@@ -81,11 +82,19 @@ public class EventController{
         if (!eventRepository.existsById(id)){
             return ResponseEntity.notFound().build();
         }
-        List<String> categories = eventRepository.getEventCategories(id);
+        List<String> categories = List.of(eventRepository.getEventCategories(id).split(","));
         if (categories.isEmpty()){
             return ResponseEntity.badRequest().body(new MessageResponse("Категории не заполнены. Обратитесь к Администратору"));
         }else{
             return ResponseEntity.ok(categories);
         }
     }
+
+//    @GetMapping("/{id}/categories/seats")
+//    public ResponseEntity<?> getCategoriesWithSeats(@PathVariable Long id){
+//        if(!eventRepository.existsById(id)){
+//            return ResponseEntity.notFound().build();
+//        }
+//
+//    }
 }
