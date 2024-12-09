@@ -12,12 +12,12 @@ import ru.timerdar.CultureBooking.repositories.TicketRepository;
 import ru.timerdar.CultureBooking.responses.MessageResponse;
 
 import java.net.URI;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/events")
 public class EventController{
+
 
     @Autowired
     private EventRepository eventRepository;
@@ -90,11 +90,20 @@ public class EventController{
         }
     }
 
-//    @GetMapping("/{id}/categories/seats")
-//    public ResponseEntity<?> getCategoriesWithSeats(@PathVariable Long id){
-//        if(!eventRepository.existsById(id)){
-//            return ResponseEntity.notFound().build();
-//        }
-//
-//    }
+    @GetMapping("/{id}/seats")
+    public ResponseEntity<?> getCategoriesWithSeats(@PathVariable Long id, @RequestParam("sector") String sector){
+        if(!eventRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        if (sector.equals("all")){
+            return ResponseEntity.ok(eventRepository.getAllSeats(id));
+        }else{
+            return ResponseEntity.ok(eventRepository.getCategoryByNameAndEventId(id, sector));
+        }
+    }
+
+    public EventController(EventRepository eventRepository, TicketRepository ticketRepository){
+        this.ticketRepository = ticketRepository;
+        this.eventRepository = eventRepository;
+    }
 }
