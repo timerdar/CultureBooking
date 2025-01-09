@@ -1,4 +1,4 @@
-package ru.timerdar.CultureBooking.entities;
+package ru.timerdar.CultureBooking.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import lombok.Setter;
 public class Visitor {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -22,6 +22,7 @@ public class Visitor {
     @Column(nullable = false)
     private String fathername;
 
-    @Column(nullable = false)
-    private String category;
+    @OneToMany
+    @JoinColumn(name = "sectorId", referencedColumnName = "id")
+    private Sector sector;
 }

@@ -1,4 +1,4 @@
-package ru.timerdar.CultureBooking.responses;
+package ru.timerdar.CultureBooking.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package ru.timerdar.CultureBooking.repositories;
+package ru.timerdar.CultureBooking.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;

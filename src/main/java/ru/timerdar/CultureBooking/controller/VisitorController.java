@@ -1,12 +1,12 @@
-package ru.timerdar.CultureBooking.controllers;
+package ru.timerdar.CultureBooking.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.timerdar.CultureBooking.entities.Visitor;
-import ru.timerdar.CultureBooking.repositories.VisitorRepository;
-import ru.timerdar.CultureBooking.responses.MessageResponse;
+import ru.timerdar.CultureBooking.model.Visitor;
+import ru.timerdar.CultureBooking.repository.VisitorRepository;
+import ru.timerdar.CultureBooking.dto.MessageResponse;
 
 import java.net.URI;
 import java.util.List;

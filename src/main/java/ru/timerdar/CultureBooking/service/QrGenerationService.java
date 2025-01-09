@@ -1,9 +1,11 @@
-package ru.timerdar.CultureBooking.ticketCreation;
+package ru.timerdar.CultureBooking.service;
 
 import io.nayuki.qrcodegen.QrCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -14,12 +16,11 @@ import java.util.UUID;
 
 @Getter @Setter
 @AllArgsConstructor
-public class QrGenerator {
+@Service
+public class QrGenerationService {
 
-    private String url;
-
-    public byte[] generateTicketQrImage(UUID ticketUuid) throws IOException {
-        QrCode qr = QrCode.encodeText(this.url + ticketUuid.toString(), QrCode.Ecc.HIGH);
+    public static byte[] generateTicketQrImage(UUID ticketUuid, @Value("${ru.timerdar.ticket.uri}") String uri) throws IOException {
+        QrCode qr = QrCode.encodeText(uri + ticketUuid.toString(), QrCode.Ecc.HIGH);
         BufferedImage image = toImage(qr, 4, 5, 0xFFFFFF, 0x000000);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

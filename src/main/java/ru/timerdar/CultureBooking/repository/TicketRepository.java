@@ -1,8 +1,8 @@
-package ru.timerdar.CultureBooking.repositories;
+package ru.timerdar.CultureBooking.repository;
 
-import ru.timerdar.CultureBooking.entities.Event;
-import ru.timerdar.CultureBooking.entities.Ticket;
-import ru.timerdar.CultureBooking.entities.Visitor;
+import ru.timerdar.CultureBooking.model.Event;
+import ru.timerdar.CultureBooking.model.Ticket;
+import ru.timerdar.CultureBooking.model.Visitor;
 
 import java.util.List;
 import java.util.Optional;
