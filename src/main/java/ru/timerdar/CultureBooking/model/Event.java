@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @AllArgsConstructor
-@Getter
+@Getter @Setter
 @Table(name = "events")
 public class Event {
 
@@ -31,12 +31,10 @@ public class Event {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
-    private List<Sector> sectors;
-
     public ShortEventDto toShort(){
         return new ShortEventDto(this.id, this.name, this.description, this.date);
     }
+
 
 
 }

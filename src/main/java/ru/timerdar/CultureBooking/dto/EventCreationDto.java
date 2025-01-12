@@ -14,13 +14,13 @@ public class EventCreationDto {
     private String name;
     private String description;
     private LocalDateTime date;
-    private List<Sector> sectors;
+    private List<SectorCreationDto> sectors;
 
     public boolean isValid(){
-        return this.name.isEmpty() || this.description.isEmpty() || this.date.isBefore(LocalDateTime.now()) || this.sectors.isEmpty();
+        return !(this.name.isEmpty() || this.description.isEmpty() || this.date.isBefore(LocalDateTime.now()) || this.sectors.isEmpty());
     }
 
     public Event toEvent(){
-        return new Event(1L, this.name, this.description, this.date, LocalDateTime.now(),this.sectors);
+        return new Event(1L, this.name, this.description, this.date, LocalDateTime.now());
     }
 }

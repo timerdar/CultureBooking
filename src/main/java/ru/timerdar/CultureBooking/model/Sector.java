@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Entity
 @AllArgsConstructor
 @Setter @Getter
@@ -22,6 +20,7 @@ public class Sector {
     @Column(nullable = false)
     private String color;
 
-    @Column(nullable = false)
-    private List<Seat> seats;
+    public boolean isValid(){
+        return !(color.matches("#\\d{6}") || name.isEmpty());
+    }
 }

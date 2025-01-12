@@ -1,7 +1,8 @@
 package ru.timerdar.CultureBooking.model.enums;
 
 public enum TicketStatus {
-    DEFAULT,
+    CREATED,
     REJECTED,
-    USED
+    USED,
+    BANNED
 }

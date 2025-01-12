@@ -6,14 +6,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.timerdar.CultureBooking.dto.EventCreationDto;
-import ru.timerdar.CultureBooking.exceptions.EmptyResultException;
+import ru.timerdar.CultureBooking.dto.SectorCreationDto;
 import ru.timerdar.CultureBooking.model.Event;
 import ru.timerdar.CultureBooking.dto.ShortEventDto;
+import ru.timerdar.CultureBooking.model.Sector;
 import ru.timerdar.CultureBooking.model.Ticket;
 import ru.timerdar.CultureBooking.repository.EventRepository;
 import ru.timerdar.CultureBooking.repository.TicketRepository;
 import ru.timerdar.CultureBooking.dto.MessageResponse;
 import ru.timerdar.CultureBooking.service.EventService;
+import ru.timerdar.CultureBooking.service.SeatService;
+import ru.timerdar.CultureBooking.service.SectorService;
 
 import java.net.URI;
 import java.util.*;
@@ -24,6 +27,10 @@ public class EventController{
 
     @Autowired
     private EventService eventService;
+    @Autowired
+    private SectorService sectorService;
+    @Autowired
+    private SeatService seatService;
 
     @PostMapping
     public ResponseEntity<ShortEventDto> createEvent(@RequestBody EventCreationDto event) throws IllegalArgumentException{
@@ -32,12 +39,12 @@ public class EventController{
     }
 
     @GetMapping
-    public ResponseEntity<ArrayList<ShortEventDto>> getEventsList() throws EmptyResultException {
+    public ResponseEntity<ArrayList<ShortEventDto>> getEventsList(){
         return ResponseEntity.ok(eventService.getEventsList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getEventById(@PathVariable Long id) throws EmptyResultException{
+    public ResponseEntity<Event> getEventById(@PathVariable Long id){
         return ResponseEntity.ok(eventService.getFullEvent(id));
     }
 
@@ -52,4 +59,5 @@ public class EventController{
         return ResponseEntity.ok(new MessageResponse("Мероприятие c id = " + id + " удалено"));
     }
 
+    //TODO getEventSectors(){} /api/event/id/sectors
 }

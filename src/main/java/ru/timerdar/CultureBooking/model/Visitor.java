@@ -1,12 +1,14 @@
 package ru.timerdar.CultureBooking.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter @Setter
 @Table(name = "visitors")
+@AllArgsConstructor
 public class Visitor {
 
     @Id
@@ -22,7 +24,5 @@ public class Visitor {
     @Column(nullable = false)
     private String fathername;
 
-    @OneToMany
-    @JoinColumn(name = "sectorId", referencedColumnName = "id")
-    private Sector sector;
+
 }

@@ -1,6 +1,7 @@
 package ru.timerdar.CultureBooking.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
@@ -12,6 +13,7 @@ import java.util.UUID;
 @Entity
 @Getter @Setter
 @Table(name = "tickets")
+@AllArgsConstructor
 public class Ticket {
 
     @Id
@@ -28,7 +30,7 @@ public class Ticket {
 
     @OneToOne
     @JoinColumn(name = "seatId", referencedColumnName = "id")
-    private Long seat;
+    private Seat seat;
 
     @Enumerated(EnumType.STRING)
     private TicketStatus ticketStatus;
