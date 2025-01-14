@@ -9,12 +9,9 @@ import ru.timerdar.CultureBooking.model.Seat;
 @AllArgsConstructor
 public class SeatCreationDto {
     private String rowAndSeatNumber;
+    private Long sectorId;
 
     public boolean isValid(){
         return rowAndSeatNumber.matches("\\d+-\\d+");
-    }
-
-    public Seat toSeat(){
-        return new Seat(1L, this.rowAndSeatNumber, false);
     }
 }

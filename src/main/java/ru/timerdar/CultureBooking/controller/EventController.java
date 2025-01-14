@@ -1,18 +1,11 @@
 package ru.timerdar.CultureBooking.controller;
 
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.timerdar.CultureBooking.dto.EventCreationDto;
-import ru.timerdar.CultureBooking.dto.SectorCreationDto;
 import ru.timerdar.CultureBooking.model.Event;
 import ru.timerdar.CultureBooking.dto.ShortEventDto;
-import ru.timerdar.CultureBooking.model.Sector;
-import ru.timerdar.CultureBooking.model.Ticket;
-import ru.timerdar.CultureBooking.repository.EventRepository;
-import ru.timerdar.CultureBooking.repository.TicketRepository;
 import ru.timerdar.CultureBooking.dto.MessageResponse;
 import ru.timerdar.CultureBooking.service.EventService;
 import ru.timerdar.CultureBooking.service.SeatService;
@@ -26,11 +19,11 @@ import java.util.*;
 public class EventController{
 
     @Autowired
-    private EventService eventService;
+    private SeatService seatService;
     @Autowired
     private SectorService sectorService;
     @Autowired
-    private SeatService seatService;
+    private EventService eventService;
 
     @PostMapping
     public ResponseEntity<ShortEventDto> createEvent(@RequestBody EventCreationDto event) throws IllegalArgumentException{

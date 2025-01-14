@@ -19,4 +19,7 @@ public class Seat {
 
     @Column(nullable = false)
     private boolean reserved;
+
+    @Column(nullable = false)
+    private Long eventId;
 }

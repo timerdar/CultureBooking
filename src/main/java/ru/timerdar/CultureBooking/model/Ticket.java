@@ -20,17 +20,14 @@ public class Ticket {
     @UuidGenerator
     private UUID uuid;
 
-    @ManyToOne
-    @JoinColumn(name = "eventId", referencedColumnName = "id")
-    private Event event;
+    @Column(nullable = false)
+    private Long eventId;
 
-    @ManyToOne
-    @JoinColumn(name = "visitorId", referencedColumnName = "id")
-    private Visitor visitor;
+    @Column(nullable = false)
+    private Long visitorId;
 
-    @OneToOne
-    @JoinColumn(name = "seatId", referencedColumnName = "id")
-    private Seat seat;
+    @Column(nullable = false)
+    private Long seatId;
 
     @Enumerated(EnumType.STRING)
     private TicketStatus ticketStatus;

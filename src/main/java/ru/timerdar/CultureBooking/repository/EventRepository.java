@@ -9,6 +9,6 @@ import java.util.Optional;
 
 
 public interface EventRepository extends BaseRepository<Event, Long> {
-    @Query("select * from Events e")
-    Optional<ArrayList<Event>> getEvents(Sort sort);
+    @Query(value = "select * from Events e", nativeQuery = true)
+    ArrayList<Event> getEvents(Sort sort);
 }

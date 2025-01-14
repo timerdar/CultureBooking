@@ -31,6 +31,8 @@ public class Event {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    //TODO private Long adminId;
+
     public ShortEventDto toShort(){
         return new ShortEventDto(this.id, this.name, this.description, this.date);
     }

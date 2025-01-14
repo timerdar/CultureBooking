@@ -20,6 +20,9 @@ public class Sector {
     @Column(nullable = false)
     private String color;
 
+    @Column(nullable = false)
+    private Long eventId;
+
     public boolean isValid(){
         return !(color.matches("#\\d{6}") || name.isEmpty());
     }
