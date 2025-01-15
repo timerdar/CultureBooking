@@ -40,7 +40,7 @@ public class TicketService {
         Visitor newVisitor = visitorService.createOrUseExistingVisitor(rawTicketData.getVisitor().toVisitor());
         Seat selectedSeat = seatService.getById(rawTicketData.getSeatId());
         if (!selectedSeat.isReserved()){
-            Ticket newTicket = new Ticket(null, rawTicketData.getEventId(), newVisitor.getId(), rawTicketData.getSeatId(), TicketStatus.CREATED, LocalDateTime.now());
+            Ticket newTicket = new Ticket(null, rawTicketData.getEventId(), newVisitor.getId(), rawTicketData.getSeatId(), rawTicketData.getSectorId(), TicketStatus.CREATED, LocalDateTime.now());
             return ticketRepository.save(newTicket);
         }else{
             throw new TicketReservationException("Данное место уже занято, выберите другое");

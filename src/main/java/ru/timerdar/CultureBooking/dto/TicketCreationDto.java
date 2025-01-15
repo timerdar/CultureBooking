@@ -8,5 +8,7 @@ import lombok.Setter;
 public class TicketCreationDto {
     private VisitorCreationDto visitor;
     private Long eventId;
+    private Long sectorId;
     private Long seatId;
+
 }

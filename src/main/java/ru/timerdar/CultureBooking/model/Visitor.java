@@ -3,12 +3,14 @@ package ru.timerdar.CultureBooking.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter @Setter
 @Table(name = "visitors")
 @AllArgsConstructor
+@NoArgsConstructor
 public class Visitor {
 
     @Id

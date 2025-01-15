@@ -1,5 +1,6 @@
 package ru.timerdar.CultureBooking.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import ru.timerdar.CultureBooking.model.Event;
@@ -16,6 +17,7 @@ public class EventCreationDto {
     private LocalDateTime date;
     private List<SectorCreationDto> sectors;
 
+    @JsonIgnore
     public boolean isValid(){
         return !(this.name.isEmpty() || this.description.isEmpty() || this.date.isBefore(LocalDateTime.now()) || this.sectors.isEmpty());
     }

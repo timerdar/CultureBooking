@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import ru.timerdar.CultureBooking.dto.EventCreationDto;
 import ru.timerdar.CultureBooking.dto.ShortEventDto;
 import ru.timerdar.CultureBooking.model.Event;
+import ru.timerdar.CultureBooking.model.Sector;
 import ru.timerdar.CultureBooking.repository.EventRepository;
 
 import java.util.ArrayList;
@@ -29,11 +30,11 @@ public class EventService {
 
     public Event createEvent(EventCreationDto rawEvent){
         if(rawEvent.isValid()){
-            rawEvent.getSectors().forEach(newSector -> {
-                sectorService.createSector(newSector);
-                newSector.getSeats().forEach(newSeat -> seatService.createSeat(newSeat));
-            });
             Event createdEvent = eventRepository.save(rawEvent.toEvent());
+            rawEvent.getSectors().forEach(newSector -> {
+                Sector createdSector = sectorService.createSector(newSector, createdEvent.getId());
+                newSector.getSeats().forEach(newSeat -> seatService.createSeat(newSeat, createdSector.getId()));
+            });
             return createdEvent;
         }else{
             throw new IllegalArgumentException("Название, описание и сектора не должны быть пустыми," +
@@ -42,7 +43,7 @@ public class EventService {
     }
 
     public ArrayList<ShortEventDto> getEventsList(){
-        ArrayList<Event> fullEvents = eventRepository.getEvents(Sort.by(Sort.Direction.DESC, "eventDate"));
+        ArrayList<Event> fullEvents = eventRepository.getEvents(Sort.by(Sort.Direction.DESC, "date"));
         if (fullEvents.isEmpty()){
             throw new EntityNotFoundException("Список мероприятий пуст");
         }

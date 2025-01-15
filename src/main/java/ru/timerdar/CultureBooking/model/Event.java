@@ -3,6 +3,7 @@ package ru.timerdar.CultureBooking.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.timerdar.CultureBooking.dto.ShortEventDto;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Entity
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter @Setter
 @Table(name = "events")
 public class Event {

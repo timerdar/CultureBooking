@@ -3,6 +3,7 @@ package ru.timerdar.CultureBooking.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 import ru.timerdar.CultureBooking.model.enums.TicketStatus;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @Getter @Setter
 @Table(name = "tickets")
 @AllArgsConstructor
+@NoArgsConstructor
 public class Ticket {
 
     @Id
@@ -25,6 +27,9 @@ public class Ticket {
 
     @Column(nullable = false)
     private Long visitorId;
+
+    @Column(nullable = false)
+    private Long sectorId;
 
     @Column(nullable = false)
     private Long seatId;

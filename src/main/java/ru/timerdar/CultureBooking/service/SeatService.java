@@ -16,9 +16,9 @@ public class SeatService {
     @Autowired
     private SeatRepository seatRepository;
 
-    public Seat createSeat(SeatCreationDto newSeat){
+    public Seat createSeat(SeatCreationDto newSeat, Long sectorId){
         if(newSeat.isValid()){
-            return seatRepository.save(new Seat(1L, newSeat.getRowAndSeatNumber(), false, newSeat.getSectorId()));
+            return seatRepository.save(new Seat(1L, newSeat.getRowAndSeatNumber(), false, sectorId));
         }else{
             throw new IllegalArgumentException("Номер должен быть в формате <номер ряда>-<номер места>");
         }
@@ -29,7 +29,7 @@ public class SeatService {
     }
 
     public Seat getById(Long id){
-        return seatRepository.getReferenceById(id);
+        return seatRepository.getById(id);
     }
 
 }

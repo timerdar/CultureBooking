@@ -24,6 +24,9 @@ import java.util.*;
 @RequestMapping("/api/tickets")
 public class TicketController {
 
+    @Value("${ru.timerdar.ticket.uri}")
+    String qr_uri;
+
     @Autowired
     private TicketService ticketService;
 
@@ -41,10 +44,10 @@ public class TicketController {
 
 
     @GetMapping(value = "/generate/qr/{uuid}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<?> getTicketQr(@PathVariable UUID uuid, @Value("{ru.timerdar.ticket.uri}") String uri){
+    public ResponseEntity<?> getTicketQr(@PathVariable UUID uuid){
 
         try{
-            byte[] image = QrGenerationService.generateTicketQrImage(uuid, uri);
+            byte[] image = QrGenerationService.generateTicketQrImage(uuid, qr_uri);
             return ResponseEntity.ok(image);
         }catch (Exception e){
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));

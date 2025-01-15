@@ -17,9 +17,9 @@ public class SectorService {
     @Autowired
     private SectorRepository sectorRepository;
 
-    public Sector createSector(SectorCreationDto newSector){
+    public Sector createSector(SectorCreationDto newSector, Long eventId){
         if(newSector.isValid()){
-            return sectorRepository.save(new Sector(1L, newSector.getName(), newSector.getColor(), newSector.getEventId()));
+            return sectorRepository.save(new Sector(1L, newSector.getName(), newSector.getColor(), eventId));
         }else{
             throw new IllegalArgumentException("Цвет сектора должен быть в формате hex, имя не должно быть пустым");
         }
