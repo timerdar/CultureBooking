@@ -13,6 +13,7 @@ import ru.timerdar.CultureBooking.model.Sector;
 import ru.timerdar.CultureBooking.repository.EventRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -71,5 +72,9 @@ public class EventService {
 
     public void deleteEvent(Long id){
         eventRepository.deleteById(id);
+    }
+
+    public List<Sector> getSectorsOfEvent(Long id){
+        return sectorService.getSectorsListOfEvent(id);
     }
 }

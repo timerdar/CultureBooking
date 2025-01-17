@@ -6,13 +6,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.timerdar.CultureBooking.dto.TicketCreationDto;
+import ru.timerdar.CultureBooking.exceptions.TicketCheckingException;
 import ru.timerdar.CultureBooking.exceptions.TicketReservationException;
-import ru.timerdar.CultureBooking.model.Event;
 import ru.timerdar.CultureBooking.model.Ticket;
-import ru.timerdar.CultureBooking.model.Visitor;
-import ru.timerdar.CultureBooking.repository.EventRepository;
-import ru.timerdar.CultureBooking.repository.TicketRepository;
-import ru.timerdar.CultureBooking.repository.VisitorRepository;
 import ru.timerdar.CultureBooking.dto.MessageResponse;
 import ru.timerdar.CultureBooking.service.QrGenerationService;
 import ru.timerdar.CultureBooking.service.TicketService;
@@ -52,5 +48,21 @@ public class TicketController {
         }catch (Exception e){
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
+    }
+
+    //TODO Ограничить доступ
+    @PostMapping("/ban")
+    public ResponseEntity<?> banTicket(@RequestParam UUID uuid){
+        return ResponseEntity.ok(ticketService.banTicketByUuid(uuid));
+    }
+
+    @PostMapping("/{uuid}/cancel")
+    public ResponseEntity<?> cancelTicket(@PathVariable UUID uuid){
+        return ResponseEntity.ok(ticketService.cancelTicket(uuid));
+    }
+
+    @PostMapping("/{uuid}/check")
+    public ResponseEntity<?> checkTicketOnEnter(@PathVariable UUID uuid) throws TicketCheckingException {
+        return ResponseEntity.ok(ticketService.checkTicketOnEnter(uuid));
     }
 }

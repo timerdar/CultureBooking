@@ -7,6 +7,7 @@ import ru.timerdar.CultureBooking.dto.EventCreationDto;
 import ru.timerdar.CultureBooking.model.Event;
 import ru.timerdar.CultureBooking.dto.ShortEventDto;
 import ru.timerdar.CultureBooking.dto.MessageResponse;
+import ru.timerdar.CultureBooking.model.Sector;
 import ru.timerdar.CultureBooking.service.EventService;
 import ru.timerdar.CultureBooking.service.SeatService;
 import ru.timerdar.CultureBooking.service.SectorService;
@@ -18,10 +19,6 @@ import java.util.*;
 @RequestMapping("/api/events")
 public class EventController{
 
-    @Autowired
-    private SeatService seatService;
-    @Autowired
-    private SectorService sectorService;
     @Autowired
     private EventService eventService;
 
@@ -52,5 +49,8 @@ public class EventController{
         return ResponseEntity.ok(new MessageResponse("Мероприятие c id = " + id + " удалено"));
     }
 
-    //TODO getEventSectors(){} /api/event/id/sectors
+    @GetMapping("/api/event/{id}/sectors")
+    public ResponseEntity<List<Sector>> getEventSectors(@PathVariable("id") Long eventId){
+        return ResponseEntity.ok(eventService.getSectorsOfEvent(eventId));
+    }
 }

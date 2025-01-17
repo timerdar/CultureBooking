@@ -27,6 +27,7 @@ public class SeatService {
     public void reserveById(Long id){
         seatRepository.setReservedById(id);
     }
+    public void unreserveById(Long id) { }
 
     public Seat getById(Long id){
         return seatRepository.getById(id);

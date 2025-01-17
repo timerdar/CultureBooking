@@ -10,4 +10,6 @@ import ru.timerdar.CultureBooking.model.Seat;
 public interface SeatRepository extends JpaRepository<Seat, Long> {
     @Query("update Seat set reserved = true where id = ?1")
     int setReservedById(Long id);
+    @Query("update Seat set reserved = false where id = ?1")
+    int setUneservedById(Long id);
 }
