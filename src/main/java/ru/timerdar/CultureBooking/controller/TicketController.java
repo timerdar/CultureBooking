@@ -50,7 +50,7 @@ public class TicketController {
         }
     }
 
-    //TODO Ограничить доступ
+    //admin_permission
     @PostMapping("/ban")
     public ResponseEntity<?> banTicket(@RequestParam UUID uuid){
         return ResponseEntity.ok(ticketService.banTicketByUuid(uuid));

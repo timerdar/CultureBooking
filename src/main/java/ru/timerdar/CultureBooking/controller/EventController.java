@@ -22,6 +22,8 @@ public class EventController{
     @Autowired
     private EventService eventService;
 
+
+    //admin_permission
     @PostMapping
     public ResponseEntity<ShortEventDto> createEvent(@RequestBody EventCreationDto event) throws IllegalArgumentException{
         Event createdEvent = eventService.createEvent(event);
@@ -38,11 +40,13 @@ public class EventController{
         return ResponseEntity.ok(eventService.getFullEvent(id));
     }
 
+    //admin_permission
     @PatchMapping("/{id}")
     public ResponseEntity<Event> changeEvent(@RequestBody Event event){
         return ResponseEntity.ok(eventService.changeEvent(event));
     }
 
+    //admin_permission
     @DeleteMapping("/{id}")
     public ResponseEntity<MessageResponse> deleteEvent(@PathVariable Long id){
         eventService.deleteEvent(id);
