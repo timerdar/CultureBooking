@@ -8,6 +8,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter @Setter
-public class AuthorizationResponse {
-    private String token;
+public class ShortAdminDto {
+    private Long id;
+    private String name;
+    private String mobilePhone;
 }

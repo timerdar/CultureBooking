@@ -28,5 +28,8 @@ public class RestResponsesExceptionsHandler {
         return new ResponseEntity<>(new ErrorMessage("Seat Reserved", ex.getMessage(), webRequest.getDescription(false)), HttpStatus.BAD_REQUEST);
     }
 
-
+    @ExceptionHandler({Exception.class})
+    public ResponseEntity<ErrorMessage> otherErrorHandle(Exception ex, WebRequest webRequest){
+        return new ResponseEntity<>(new ErrorMessage(ex.getCause().toString(), ex.getLocalizedMessage(), webRequest.getDescription(false)), HttpStatus.BAD_REQUEST);
+    }
 }

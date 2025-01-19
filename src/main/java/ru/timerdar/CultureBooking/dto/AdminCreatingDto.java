@@ -26,7 +26,8 @@ public class AdminCreatingDto {
     }
 
     public boolean passwordValidation(){
-        return password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\\\S+$).{8,}$");
+        System.out.println(password);
+        return password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$");
     }
 }
 

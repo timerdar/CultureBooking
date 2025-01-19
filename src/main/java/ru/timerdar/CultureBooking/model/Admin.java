@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.timerdar.CultureBooking.dto.ShortAdminDto;
+import ru.timerdar.CultureBooking.dto.ShortEventDto;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +15,7 @@ import java.time.LocalDateTime;
 @Getter @Setter
 @Table(name = "admins")
 @AllArgsConstructor
+@NoArgsConstructor
 public class Admin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,4 +39,8 @@ public class Admin {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+
+    public ShortAdminDto toShort(){
+        return new ShortAdminDto(id, name, mobilePhone);
+    }
 }

@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.timerdar.CultureBooking.model.Seat;
 import ru.timerdar.CultureBooking.service.AdminService;
@@ -16,6 +17,7 @@ import ru.timerdar.CultureBooking.service.JwtService;
 
 import java.io.IOException;
 
+@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -37,6 +39,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails adminDetails = adminService.loadUserByUsername(username);
 
+
+            //TODO ДОБАВИТЬ ВЫВОД РОЛЕЙ
             if (jwtService.isTokenValid(jwt, adminDetails)){
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         adminDetails, null, adminDetails
