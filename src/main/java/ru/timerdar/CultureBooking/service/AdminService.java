@@ -53,7 +53,7 @@ public class AdminService implements UserDetailsService{
                 encoder.encode(adminCreatingDto.getPassword()),
                 adminCreatingDto.getName(),
                 adminCreatingDto.getMobilePhone(),
-                "ADMIN",
+                "ROLE_ADMIN",
                 LocalDateTime.now());
 
         return adminRepository.save(newAdmin);

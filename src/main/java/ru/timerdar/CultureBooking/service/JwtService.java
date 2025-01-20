@@ -29,7 +29,7 @@ public class JwtService {
 
     public Claims extractAllClaims(String token){
         return Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
-                .build().parseClaimsJwt(token).getBody();
+                .build().parseClaimsJws(token).getBody();
     }
 
     public String extractUsername(String token){
@@ -38,6 +38,7 @@ public class JwtService {
 
     public String generateToken(UserDetails userDetails){
         Map<String, Object> claims = new HashMap<>();
+
         return createToken(claims, userDetails.getUsername());
     }
 

@@ -1,11 +1,20 @@
 package ru.timerdar.CultureBooking.config;
 
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
+@SecurityScheme(
+        name = "Authorization",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
 @Configuration
 public class SwaggerConfig {
 
@@ -14,7 +23,6 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("my-api") // Название группы (отобразится в Swagger UI)
                 .packagesToScan("ru.timerdar.CultureBooking.controller") // Укажите пакет ваших контроллеров
-                .addOperationCustomizer(customize())
                 .build();
     }
 

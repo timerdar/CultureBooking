@@ -33,4 +33,6 @@ public class SeatService {
         return seatRepository.getById(id);
     }
 
+
+    //TODO сделать метод получения списка мест по id сектора
 }

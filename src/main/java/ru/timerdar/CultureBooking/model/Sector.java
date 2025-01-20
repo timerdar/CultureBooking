@@ -1,5 +1,6 @@
 package ru.timerdar.CultureBooking.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +26,8 @@ public class Sector {
     @Column(nullable = false)
     private Long eventId;
 
+
+    @JsonIgnore
     public boolean isValid(){
         return !(color.matches("#\\d{6}") || name.isEmpty());
     }

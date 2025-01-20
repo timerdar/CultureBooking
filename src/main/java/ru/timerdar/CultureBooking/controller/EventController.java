@@ -1,5 +1,6 @@
 package ru.timerdar.CultureBooking.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,7 @@ public class EventController{
 
 
     //admin_permission
+    @SecurityRequirement(name = "Authorization")
     @PostMapping
     public ResponseEntity<ShortEventDto> createEvent(@RequestBody EventCreationDto event) throws IllegalArgumentException{
         Event createdEvent = eventService.createEvent(event);
@@ -41,12 +43,14 @@ public class EventController{
     }
 
     //admin_permission
+    @SecurityRequirement(name = "Authorization")
     @PatchMapping("/{id}")
     public ResponseEntity<Event> changeEvent(@RequestBody Event event){
         return ResponseEntity.ok(eventService.changeEvent(event));
     }
 
     //admin_permission
+    @SecurityRequirement(name = "Authorization")
     @DeleteMapping("/{id}")
     public ResponseEntity<MessageResponse> deleteEvent(@PathVariable Long id){
         eventService.deleteEvent(id);
