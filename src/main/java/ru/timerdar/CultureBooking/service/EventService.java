@@ -3,12 +3,13 @@ package ru.timerdar.CultureBooking.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.timerdar.CultureBooking.dto.EventCreationDto;
 import ru.timerdar.CultureBooking.dto.ShortEventDto;
 import ru.timerdar.CultureBooking.model.Event;
+import ru.timerdar.CultureBooking.model.Seat;
 import ru.timerdar.CultureBooking.model.Sector;
 import ru.timerdar.CultureBooking.repository.EventRepository;
 
@@ -29,8 +30,12 @@ public class EventService {
     @Autowired
     private SectorService sectorService;
 
+    @Autowired
+    private AdminService adminService;
+
+    @Transactional
     public Event createEvent(EventCreationDto rawEvent){
-        if(rawEvent.isValid()){
+        if(rawEvent.isValid() && adminService.exists(rawEvent.getAdminId())){
             Event createdEvent = eventRepository.save(rawEvent.toEvent());
             rawEvent.getSectors().forEach(newSector -> {
                 Sector createdSector = sectorService.createSector(newSector, createdEvent.getId());
@@ -75,6 +80,20 @@ public class EventService {
     }
 
     public List<Sector> getSectorsOfEvent(Long id){
-        return sectorService.getSectorsListOfEvent(id);
+        List<Sector> sectors = sectorService.getSectorsListOfEvent(id);
+        if (sectors.isEmpty()){
+            throw new EntityNotFoundException("Для мероприятия нет заданных секторов");
+        }
+        return sectors;
+    }
+
+    public List<Seat> getSeatsBySectorOfEvent(Long eventId, Long sectorId){
+        List<Sector> sectorsOfEvent = getSectorsOfEvent(eventId);
+        for (Sector sector: sectorsOfEvent){
+            if (sector.getId().equals(sectorId)){
+                return seatService.getSeatsBySectorId(sectorId);
+            }
+        }
+        throw new EntityNotFoundException("Данный сектор не относится к заданному мероприятию");
     }
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import ru.timerdar.CultureBooking.model.Event;
-import ru.timerdar.CultureBooking.model.Sector;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +13,7 @@ import java.util.List;
 public class EventCreationDto {
     private String name;
     private String description;
+    private Long adminId;
     private LocalDateTime date;
     private List<SectorCreationDto> sectors;
 
@@ -23,6 +23,6 @@ public class EventCreationDto {
     }
 
     public Event toEvent(){
-        return new Event(1L, this.name, this.description, this.date, LocalDateTime.now());
+        return new Event(1L, this.name, this.description, this.date, LocalDateTime.now(), this.adminId);
     }
 }

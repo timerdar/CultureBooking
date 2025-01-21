@@ -23,5 +23,5 @@ public class Seat {
     private boolean reserved;
 
     @Column(nullable = false)
-    private Long eventId;
+    private Long sectorId;
 }

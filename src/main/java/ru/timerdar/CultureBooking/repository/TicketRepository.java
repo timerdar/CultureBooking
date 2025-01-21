@@ -1,9 +1,9 @@
 package ru.timerdar.CultureBooking.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
-import org.springframework.stereotype.Repository;
 import ru.timerdar.CultureBooking.model.Ticket;
 import ru.timerdar.CultureBooking.model.enums.TicketStatus;
 
@@ -19,7 +19,8 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
     List<Ticket> findAllByEventIdAndSectorId(Long eventId, Long sectorId);
     List<Ticket> findAllByVisitorId(Long visitorId);
 
-    @Query("update Ticket set ticketStatus=?1 where uuid=?2")
+    @Modifying
+    @Query("update Ticket set ticketStatus=?2 where uuid=?1")
     int updateTicketStatusById(UUID uuid, TicketStatus status);
 
 }

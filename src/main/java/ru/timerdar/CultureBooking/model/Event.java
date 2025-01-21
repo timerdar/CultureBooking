@@ -8,7 +8,6 @@ import lombok.Setter;
 import ru.timerdar.CultureBooking.dto.ShortEventDto;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -33,7 +32,8 @@ public class Event {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    //TODO private Long adminId;
+    @Column(nullable = false)
+    private Long adminId;
 
     public ShortEventDto toShort(){
         return new ShortEventDto(this.id, this.name, this.description, this.date);

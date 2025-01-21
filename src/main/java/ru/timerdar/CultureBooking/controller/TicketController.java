@@ -1,13 +1,14 @@
 package ru.timerdar.CultureBooking.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.timerdar.CultureBooking.dto.TicketCreationDto;
-import ru.timerdar.CultureBooking.exceptions.TicketCheckingException;
 import ru.timerdar.CultureBooking.exceptions.TicketReservationException;
+import ru.timerdar.CultureBooking.exceptions.TicketStatusChangingException;
 import ru.timerdar.CultureBooking.model.Ticket;
 import ru.timerdar.CultureBooking.dto.MessageResponse;
 import ru.timerdar.CultureBooking.service.QrGenerationService;
@@ -21,7 +22,7 @@ import java.util.*;
 public class TicketController {
 
     @Value("${ru.timerdar.ticket.uri}")
-    String qr_uri;
+    String QR_URI;
 
     @Autowired
     private TicketService ticketService;
@@ -43,7 +44,7 @@ public class TicketController {
     public ResponseEntity<?> getTicketQr(@PathVariable UUID uuid){
 
         try{
-            byte[] image = QrGenerationService.generateTicketQrImage(uuid, qr_uri);
+            byte[] image = QrGenerationService.generateTicketQrImage(uuid, QR_URI);
             return ResponseEntity.ok(image);
         }catch (Exception e){
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
@@ -51,18 +52,19 @@ public class TicketController {
     }
 
     //admin_permission
+    @SecurityRequirement(name = "Authorization")
     @PostMapping("/ban")
-    public ResponseEntity<?> banTicket(@RequestParam UUID uuid){
+    public ResponseEntity<?> banTicket(@RequestParam UUID uuid) throws TicketStatusChangingException {
         return ResponseEntity.ok(ticketService.banTicketByUuid(uuid));
     }
 
     @PostMapping("/{uuid}/cancel")
-    public ResponseEntity<?> cancelTicket(@PathVariable UUID uuid){
+    public ResponseEntity<?> cancelTicket(@PathVariable UUID uuid) throws TicketStatusChangingException {
         return ResponseEntity.ok(ticketService.cancelTicket(uuid));
     }
 
     @PostMapping("/{uuid}/check")
-    public ResponseEntity<?> checkTicketOnEnter(@PathVariable UUID uuid) throws TicketCheckingException {
+    public ResponseEntity<?> checkTicketOnEnter(@PathVariable UUID uuid) throws TicketStatusChangingException {
         return ResponseEntity.ok(ticketService.checkTicketOnEnter(uuid));
     }
 }

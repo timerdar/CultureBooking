@@ -8,10 +8,9 @@ import ru.timerdar.CultureBooking.dto.EventCreationDto;
 import ru.timerdar.CultureBooking.model.Event;
 import ru.timerdar.CultureBooking.dto.ShortEventDto;
 import ru.timerdar.CultureBooking.dto.MessageResponse;
+import ru.timerdar.CultureBooking.model.Seat;
 import ru.timerdar.CultureBooking.model.Sector;
 import ru.timerdar.CultureBooking.service.EventService;
-import ru.timerdar.CultureBooking.service.SeatService;
-import ru.timerdar.CultureBooking.service.SectorService;
 
 import java.net.URI;
 import java.util.*;
@@ -60,5 +59,10 @@ public class EventController{
     @GetMapping("/api/event/{id}/sectors")
     public ResponseEntity<List<Sector>> getEventSectors(@PathVariable("id") Long eventId){
         return ResponseEntity.ok(eventService.getSectorsOfEvent(eventId));
+    }
+
+    @GetMapping("/api/event/{eventId}/{sectorId}/seats")
+    public ResponseEntity<List<Seat>> getSeatsOfEventBySector(@PathVariable Long eventId, @PathVariable Long sectorId){
+        return ResponseEntity.ok(eventService.getSeatsBySectorOfEvent(eventId, sectorId));
     }
 }

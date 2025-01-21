@@ -1,15 +1,14 @@
 package ru.timerdar.CultureBooking.service;
 
 import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import ru.timerdar.CultureBooking.dto.EventAndSectorIdsDto;
+import org.springframework.transaction.annotation.Transactional;
 import ru.timerdar.CultureBooking.dto.TicketCreationDto;
 import ru.timerdar.CultureBooking.dto.TicketStatusChangingDto;
-import ru.timerdar.CultureBooking.exceptions.TicketCheckingException;
 import ru.timerdar.CultureBooking.exceptions.TicketReservationException;
+import ru.timerdar.CultureBooking.exceptions.TicketStatusChangingException;
 import ru.timerdar.CultureBooking.model.*;
 import ru.timerdar.CultureBooking.model.enums.TicketStatus;
 import ru.timerdar.CultureBooking.repository.TicketRepository;
@@ -40,6 +39,8 @@ public class TicketService {
     @Value("${ru.timerdar.ticket.timeToCheck}")
     private int timeToStartTicketChecking;
 
+
+    @Transactional
     public Ticket createTicket(TicketCreationDto rawTicketData) throws TicketReservationException {
         Visitor newVisitor = visitorService.createOrUseExistingVisitor(rawTicketData.getVisitor().toVisitor());
         Seat selectedSeat = seatService.getById(rawTicketData.getSeatId());
@@ -52,21 +53,24 @@ public class TicketService {
         }
     }
 
-    public Ticket banTicketByUuid(UUID ticketUuid){
+    @Transactional
+    public Ticket banTicketByUuid(UUID ticketUuid) throws TicketStatusChangingException {
         TicketStatusChangingDto changingDto = new TicketStatusChangingDto(ticketUuid, TicketStatus.BANNED);
         Ticket bannedTicket = this.changeTicketStatus(changingDto);
         seatService.unreserveById(bannedTicket.getSeatId());
         return bannedTicket;
     }
 
-    public Ticket cancelTicket(UUID ticketUuid){
+    @Transactional
+    public Ticket cancelTicket(UUID ticketUuid) throws TicketStatusChangingException {
         TicketStatusChangingDto changingDto = new TicketStatusChangingDto(ticketUuid, TicketStatus.CANCELED);
         Ticket canceledTicket = this.changeTicketStatus(changingDto);
         seatService.unreserveById(canceledTicket.getSeatId());
         return canceledTicket;
     }
 
-    public Ticket checkTicketOnEnter(UUID ticketUuid) throws TicketCheckingException{
+    @Transactional
+    public Ticket checkTicketOnEnter(UUID ticketUuid) throws TicketStatusChangingException{
         Optional<Ticket> ticket = ticketRepository.findByUuid(ticketUuid);
         if (ticket.isPresent()){
             Event event = eventService.getFullEvent(ticket.get().getEventId());
@@ -75,7 +79,7 @@ public class TicketService {
                 TicketStatusChangingDto changingDto = new TicketStatusChangingDto(ticketUuid, TicketStatus.USED);
                 return this.changeTicketStatus(changingDto);
             }else{
-                throw new TicketCheckingException("Подтвердить присутствие необходимо не раньше, чем за " + ticketCheckTime + " минут до начала мероприятия");
+                throw new TicketStatusChangingException("Подтвердить присутствие необходимо не раньше, чем за " + ticketCheckTime + " минут до начала мероприятия");
             }
         }else{
             throw new EntityNotFoundException("Билет не найден");
@@ -83,8 +87,13 @@ public class TicketService {
 
     }
 
-    public Ticket changeTicketStatus(TicketStatusChangingDto ticketStatusChanging){
+    public Ticket changeTicketStatus(TicketStatusChangingDto ticketStatusChanging) throws TicketStatusChangingException {
         Ticket ticket = getByUUID(ticketStatusChanging.getTicketUUID());
+        if (ticketStatusChanging.getNewStatus() != TicketStatus.CREATED){
+            if (ticket.getTicketStatus() == TicketStatus.CREATED){
+                throw new TicketStatusChangingException("Заблокировать/отменить можно только созданный билет");
+            }
+        }
         ticketRepository.updateTicketStatusById(ticketStatusChanging.getTicketUUID(), ticketStatusChanging.getNewStatus());
         return ticketRepository.getReferenceById(ticketStatusChanging.getTicketUUID());
     }
@@ -93,8 +102,8 @@ public class TicketService {
         return ticketRepository.findAllByEventId(eventId);
     }
 
-    public List<Ticket> getAllTicketsByEventAndSector(EventAndSectorIdsDto idsDto){
-        return ticketRepository.findAllByEventIdAndSectorId(idsDto.getEventId(), idsDto.getSectorId());
+    public List<Ticket> getAllTicketsByEventAndSector(Long eventId, Long sectorId){
+        return ticketRepository.findAllByEventIdAndSectorId(eventId, sectorId);
     }
 
     public List<Ticket> getAllTicketsByVisitor(Long visitorId){

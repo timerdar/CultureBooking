@@ -22,7 +22,6 @@ public class AuthenticationProvider {
 
     public AuthorizationResponse authenticate(AuthRequest authRequest){
         UserDetails adminDetails = adminService.loadUserByUsername(authRequest.getUsername());
-        String passwordHash = encoder.encode(authRequest.getPassword());
         if (!encoder.matches(authRequest.getPassword(), adminDetails.getPassword())){
             throw new WrongPasswordException("Неверный пароль");
         }
