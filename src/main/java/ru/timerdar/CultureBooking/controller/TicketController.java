@@ -17,6 +17,7 @@ import ru.timerdar.CultureBooking.service.TicketService;
 import java.net.URI;
 import java.util.*;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/tickets")
 public class TicketController {
@@ -42,7 +43,6 @@ public class TicketController {
 
     @GetMapping(value = "/generate/qr/{uuid}", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<?> getTicketQr(@PathVariable UUID uuid){
-
         try{
             byte[] image = QrGenerationService.generateTicketQrImage(uuid, QR_URI);
             return ResponseEntity.ok(image);

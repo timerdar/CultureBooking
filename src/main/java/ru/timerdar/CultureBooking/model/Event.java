@@ -35,6 +35,9 @@ public class Event {
     @Column(nullable = false)
     private Long adminId;
 
+    @Column(nullable = false)
+    private boolean visible;
+
     public ShortEventDto toShort(){
         return new ShortEventDto(this.id, this.name, this.description, this.date);
     }

@@ -13,6 +13,7 @@ import ru.timerdar.CultureBooking.service.AdminService;
 
 import java.net.URI;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
@@ -21,7 +22,7 @@ public class AdminController {
     private AdminService adminService;
 
     @PostMapping
-    public ResponseEntity<Admin> registrateNewAdmin(AdminCreatingDto creatingDto){
+    public ResponseEntity<Admin> registrateNewAdmin(@RequestBody AdminCreatingDto creatingDto){
         Admin createdAdmin = adminService.createNewAdmin(creatingDto);
         return ResponseEntity.created(URI.create("/api/admin/" + createdAdmin.getId())).body(createdAdmin);
     }

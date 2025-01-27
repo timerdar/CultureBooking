@@ -5,10 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
 @NoArgsConstructor
-@Getter @Setter
-public class AuthorizationResponse {
-    private Long adminId;
-    private String token;
+@Setter @Getter
+@AllArgsConstructor
+public class SeatStatDto {
+    private int reservedCount;
+    private int unreservedCount;
 }

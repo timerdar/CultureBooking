@@ -6,10 +6,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import ru.timerdar.CultureBooking.dto.ShortAdminDto;
-import ru.timerdar.CultureBooking.dto.ShortEventDto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter @Setter
@@ -21,7 +27,7 @@ public class Admin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)
@@ -42,5 +48,21 @@ public class Admin {
 
     public ShortAdminDto toShort(){
         return new ShortAdminDto(id, name, mobilePhone);
+    }
+
+    public UserDetails toDetails(){
+        ArrayList<String> roles = new ArrayList<>();
+        roles.add(role);
+        return new User(
+                username,
+                passwordHash,
+                mapRolesToAuthorities(roles)
+        );
+    }
+
+    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<String> roles) {
+        return roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 }

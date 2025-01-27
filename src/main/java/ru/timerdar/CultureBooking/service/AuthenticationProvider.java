@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.timerdar.CultureBooking.dto.AuthRequest;
 import ru.timerdar.CultureBooking.dto.AuthorizationResponse;
 import ru.timerdar.CultureBooking.exceptions.WrongPasswordException;
+import ru.timerdar.CultureBooking.model.Admin;
 
 @Service
 public class AuthenticationProvider {
@@ -21,11 +22,13 @@ public class AuthenticationProvider {
     private JwtService jwtService;
 
     public AuthorizationResponse authenticate(AuthRequest authRequest){
-        UserDetails adminDetails = adminService.loadUserByUsername(authRequest.getUsername());
+        Admin admin = adminService.getAdminByUsername(authRequest.getUsername());
+        UserDetails adminDetails = admin.toDetails();
         if (!encoder.matches(authRequest.getPassword(), adminDetails.getPassword())){
             throw new WrongPasswordException("Неверный пароль");
         }
+
         String token = jwtService.generateToken(adminDetails);
-        return new AuthorizationResponse(token);
+        return new AuthorizationResponse(admin.getId(), token);
     }
 }

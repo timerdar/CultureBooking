@@ -23,6 +23,6 @@ public class EventCreationDto {
     }
 
     public Event toEvent(){
-        return new Event(1L, this.name, this.description, this.date, LocalDateTime.now(), this.adminId);
+        return new Event(1L, this.name, this.description, this.date, LocalDateTime.now(), this.adminId, true);
     }
 }

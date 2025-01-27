@@ -37,7 +37,7 @@ public class AdminService implements UserDetailsService{
 
     public Admin createNewAdmin(AdminCreatingDto adminCreatingDto){
         if(!adminCreatingDto.isValid()){
-            throw new IllegalArgumentException("Пароль должен содержать строчные и заглавные буквы, цифры и спецсимволы: @#$%^&+=");
+            throw new IllegalArgumentException("Пароль должен быть больше 8 символов, содержать строчные и заглавные буквы, цифры и спецсимволы: @#$%^&+=");
         }
         //TODO сделать обработку эксепшна
         if(!adminCreatingDto.getCreatingCode().equals(code)){
@@ -62,19 +62,17 @@ public class AdminService implements UserDetailsService{
         return admin.get().toShort();
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public Admin getAdminByUsername(String username){
         Optional<Admin> admin = adminRepository.getByUsername(username);
         if(admin.isEmpty()){
             throw new UsernameNotFoundException("Администратор не найден");
         }
-        ArrayList<String> roles = new ArrayList<>();
-        roles.add(admin.get().getRole());
-        return new User(
-                admin.get().getUsername(),
-                admin.get().getPasswordHash(),
-                mapRolesToAuthorities(roles)
-        );
+        return admin.get();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return getAdminByUsername(username).toDetails();
     }
 
     public boolean exists(Long id){
@@ -82,10 +80,6 @@ public class AdminService implements UserDetailsService{
         return true;
     }
 
-    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<String> roles) {
-        return roles.stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
-    }
+
 
 }

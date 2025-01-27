@@ -1,5 +1,6 @@
 package ru.timerdar.CultureBooking.handler;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,9 +8,12 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import ru.timerdar.CultureBooking.dto.ErrorMessage;
+import ru.timerdar.CultureBooking.exceptions.ExpJwtException;
 import ru.timerdar.CultureBooking.exceptions.TicketReservationException;
 import ru.timerdar.CultureBooking.exceptions.TicketStatusChangingException;
 import ru.timerdar.CultureBooking.exceptions.WrongPasswordException;
+
+import java.io.IOException;
 
 @ControllerAdvice
 public class RestResponsesExceptionsHandler {
@@ -29,13 +33,20 @@ public class RestResponsesExceptionsHandler {
         return new ResponseEntity<>(new ErrorMessage("Ticket changing error", ex.getMessage(), webRequest.getDescription(false)), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({WrongPasswordException.class})
+    @ExceptionHandler({WrongPasswordException.class, ExpJwtException.class})
     public ResponseEntity<ErrorMessage> authenticationExceptionHandle(Exception ex, WebRequest webRequest){
         return new ResponseEntity<>(new ErrorMessage("Authentication error", ex.getMessage(), webRequest.getDescription(false)), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler({IOException.class})
+    public ResponseEntity<ErrorMessage> IOExceptionHandler(Exception ex, WebRequest webRequest){
+        return new ResponseEntity<>(new ErrorMessage("File uploading error", ex.getMessage(), webRequest.getDescription(false)), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ErrorMessage> otherErrorHandle(Exception ex, WebRequest webRequest){
         return new ResponseEntity<>(new ErrorMessage("Unexpected error", ex.getMessage(), webRequest.getDescription(false)), HttpStatus.BAD_REQUEST);
     }
+
+
 }

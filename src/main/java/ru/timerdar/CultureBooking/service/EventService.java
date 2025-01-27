@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.timerdar.CultureBooking.dto.EventCreationDto;
+import ru.timerdar.CultureBooking.dto.SeatStatDto;
 import ru.timerdar.CultureBooking.dto.ShortEventDto;
 import ru.timerdar.CultureBooking.model.Event;
 import ru.timerdar.CultureBooking.model.Seat;
@@ -49,13 +50,21 @@ public class EventService {
     }
 
     public ArrayList<ShortEventDto> getEventsList(){
+        ArrayList<Event> fullEvents = this.getAllEventsList();
+        ArrayList<ShortEventDto> resultShortEvents = new ArrayList<>();
+        fullEvents.forEach(event -> {
+            if (event.isVisible()) {
+                resultShortEvents.add(event.toShort());
+            }});
+        return resultShortEvents;
+    }
+
+    public ArrayList<Event> getAllEventsList(){
         ArrayList<Event> fullEvents = eventRepository.getEvents(Sort.by(Sort.Direction.DESC, "date"));
         if (fullEvents.isEmpty()){
             throw new EntityNotFoundException("Список мероприятий пуст");
         }
-        ArrayList<ShortEventDto> resultShortEvents = new ArrayList<>();
-        fullEvents.forEach(event -> resultShortEvents.add(event.toShort()));
-        return resultShortEvents;
+        return fullEvents;
     }
 
     public Event getFullEvent(Long id){
@@ -79,6 +88,14 @@ public class EventService {
         eventRepository.deleteById(id);
     }
 
+    public void hideEvent(Long id){
+        eventRepository.hideEvent(id);
+    }
+
+    public void showEvent(Long id){
+        eventRepository.showEvent(id);
+    }
+
     public List<Sector> getSectorsOfEvent(Long id){
         List<Sector> sectors = sectorService.getSectorsListOfEvent(id);
         if (sectors.isEmpty()){
@@ -95,5 +112,20 @@ public class EventService {
             }
         }
         throw new EntityNotFoundException("Данный сектор не относится к заданному мероприятию");
+    }
+
+    public SeatStatDto getSeatsStatOfEvent(Long eventId){
+        int reserved = 0;
+        int free = 0;
+        for (Sector sector: getSectorsOfEvent(eventId)){
+            for (Seat seat: getSeatsBySectorOfEvent(eventId, sector.getId())){
+                if (seat.isReserved()){
+                    reserved++;
+                }else{
+                    free++;
+                }
+            }
+        }
+        return new SeatStatDto(reserved, free);
     }
 }
