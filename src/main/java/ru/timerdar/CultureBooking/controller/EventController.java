@@ -97,6 +97,8 @@ public class EventController{
         return ResponseEntity.ok(eventService.getSeatsBySectorOfEvent(eventId, sectorId));
     }
 
+    @Transactional
+    @SecurityRequirement(name = "Authorization")
     @PostMapping(value = "/poster", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadPoster(@RequestParam Long eventId, @RequestParam("file") MultipartFile file) throws IOException{
         return ResponseEntity.ok(posterService.savePoster(eventId, file));

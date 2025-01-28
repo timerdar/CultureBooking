@@ -5,9 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,7 +17,6 @@ import ru.timerdar.CultureBooking.repository.AdminRepository;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class AdminService implements UserDetailsService{
@@ -39,7 +35,7 @@ public class AdminService implements UserDetailsService{
         if(!adminCreatingDto.isValid()){
             throw new IllegalArgumentException("Пароль должен быть больше 8 символов, содержать строчные и заглавные буквы, цифры и спецсимволы: @#$%^&+=");
         }
-        //TODO сделать обработку эксепшна
+
         if(!adminCreatingDto.getCreatingCode().equals(code)){
             throw new AccessDeniedException("Доступ к регистрации возможен только при наличии регистрационного кода");
         }
