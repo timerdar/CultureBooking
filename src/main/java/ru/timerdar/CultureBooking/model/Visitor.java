@@ -26,5 +26,8 @@ public class Visitor {
     @Column(nullable = false)
     private String fathername;
 
-
+    @Override
+    public String toString() {
+        return surname + " " + name + " " + fathername;
+    }
 }

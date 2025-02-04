@@ -19,7 +19,7 @@ public class SeatService {
 
     public Seat createSeat(SeatCreationDto newSeat, Long sectorId){
         if(newSeat.isValid()){
-            return seatRepository.save(new Seat(1L, newSeat.getRowAndSeatNumber(), false, sectorId));
+            return seatRepository.save(new Seat(null, newSeat.getRowAndSeatNumber(), false, sectorId));
         }else{
             throw new IllegalArgumentException("Номер должен быть в формате <номер ряда>-<номер места>");
         }

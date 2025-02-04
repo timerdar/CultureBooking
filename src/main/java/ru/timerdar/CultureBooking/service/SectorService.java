@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.timerdar.CultureBooking.dto.SectorCreationDto;
 import ru.timerdar.CultureBooking.model.Event;
+import ru.timerdar.CultureBooking.model.Seat;
 import ru.timerdar.CultureBooking.model.Sector;
 import ru.timerdar.CultureBooking.repository.SectorRepository;
 
@@ -19,14 +20,14 @@ public class SectorService {
 
     public Sector createSector(SectorCreationDto newSector, Long eventId){
         if(newSector.isValid()){
-            return sectorRepository.save(new Sector(1L, newSector.getName(), newSector.getColor(), eventId));
+            return sectorRepository.save(new Sector(null, newSector.getName(), newSector.getColor(), eventId));
         }else{
             throw new IllegalArgumentException("Цвет сектора должен быть в формате hex, имя не должно быть пустым");
         }
     }
 
-    public Sector getById(Long id){
-        return sectorRepository.getReferenceById(id);
+    public Sector getSector(Long sectorId){
+        return sectorRepository.getReferenceById(sectorId);
     }
 
     public List<Sector> getSectorsListOfEvent(Long eventId){

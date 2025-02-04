@@ -9,14 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.timerdar.CultureBooking.dto.EventCreationDto;
 import ru.timerdar.CultureBooking.dto.SeatStatDto;
 import ru.timerdar.CultureBooking.dto.ShortEventDto;
-import ru.timerdar.CultureBooking.model.Event;
-import ru.timerdar.CultureBooking.model.Seat;
-import ru.timerdar.CultureBooking.model.Sector;
+import ru.timerdar.CultureBooking.model.*;
 import ru.timerdar.CultureBooking.repository.EventRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -33,6 +29,7 @@ public class EventService {
 
     @Autowired
     private AdminService adminService;
+
 
     @Transactional
     public Event createEvent(EventCreationDto rawEvent){
@@ -102,6 +99,24 @@ public class EventService {
             throw new EntityNotFoundException("Для мероприятия нет заданных секторов");
         }
         return sectors;
+    }
+
+    public Sector getSector(Long eventId, Long sectorId){
+        for (Sector sector:getSectorsOfEvent(eventId)){
+            if (sector.getId().equals(sectorId)){
+                return sector;
+            }
+        }
+        throw new EntityNotFoundException("Сектор не найден");
+    }
+
+    public Seat getSeat(Long eventId, Long sectorId, Long seatId){
+        for(Seat seat: getSeatsBySectorOfEvent(eventId, sectorId)){
+            if (seat.getId().equals(seatId)){
+                return seat;
+            }
+        }
+        throw new EntityNotFoundException("Место не найдено");
     }
 
     public List<Seat> getSeatsBySectorOfEvent(Long eventId, Long sectorId){

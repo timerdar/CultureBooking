@@ -92,9 +92,19 @@ public class EventController{
         return ResponseEntity.ok(eventService.getSectorsOfEvent(eventId));
     }
 
+    @GetMapping("/{id}/{sectorId}")
+    public ResponseEntity<Sector> getSector(@PathVariable("id") Long eventId, @PathVariable("sectorId") Long sectorId){
+        return ResponseEntity.ok(eventService.getSector(eventId, sectorId));
+    }
+
     @GetMapping("/{eventId}/{sectorId}/seats")
     public ResponseEntity<List<Seat>> getSeatsOfEventBySector(@PathVariable Long eventId, @PathVariable Long sectorId){
         return ResponseEntity.ok(eventService.getSeatsBySectorOfEvent(eventId, sectorId));
+    }
+
+    @GetMapping("/{eventId}/{sectorId}/{seatId}")
+    public ResponseEntity<Seat> getSeatOfEvent(@PathVariable Long eventId, @PathVariable Long sectorId, @PathVariable Long seatId){
+        return ResponseEntity.ok(eventService.getSeat(eventId, sectorId, seatId));
     }
 
     @Transactional

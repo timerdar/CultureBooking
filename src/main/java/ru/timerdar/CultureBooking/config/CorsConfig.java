@@ -16,7 +16,8 @@ public class CorsConfig {
                 registry.addMapping("/**") // Разрешает доступ ко всем эндпоинтам
                         .allowedOrigins("http://localhost:3000") // Адрес вашего React-приложения
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Разрешенные методы
-                        .allowedHeaders("*") // Разрешенные заголовки
+                        .allowedHeaders("*")
+                        .exposedHeaders("*")
                         .allowCredentials(false); // Если используются куки или сессии
             }
         };

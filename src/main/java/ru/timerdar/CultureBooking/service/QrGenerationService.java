@@ -19,14 +19,18 @@ import java.util.UUID;
 @Service
 public class QrGenerationService {
 
-    public static byte[] generateTicketQrImage(UUID ticketUuid, @Value("${ru.timerdar.ticket.uri}") String uri) throws IOException {
-        QrCode qr = QrCode.encodeText(uri + ticketUuid.toString(), QrCode.Ecc.HIGH);
-        BufferedImage image = toImage(qr, 4, 5, 0xFFFFFF, 0x000000);
-
+    public static byte[] generateTicketQrImage(UUID ticketUuid, String uri) throws IOException {
+        BufferedImage image = qrImage(ticketUuid, uri);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ImageIO.write(image, "png", outputStream);
         return outputStream.toByteArray();
     }
+
+    public static BufferedImage qrImage(UUID ticketUuid, String uri) throws IOException{
+        QrCode qr = QrCode.encodeText(uri + ticketUuid.toString(), QrCode.Ecc.HIGH);
+        return toImage(qr, 4, 5, 0xFFFFFF, 0x000000);
+    }
+
 
     public static BufferedImage toImage(QrCode qr, int scale, int border, int lightColor, int darkColor) {
         Objects.requireNonNull(qr);

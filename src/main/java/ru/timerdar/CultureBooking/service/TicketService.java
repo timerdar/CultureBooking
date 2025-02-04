@@ -13,6 +13,7 @@ import ru.timerdar.CultureBooking.model.*;
 import ru.timerdar.CultureBooking.model.enums.TicketStatus;
 import ru.timerdar.CultureBooking.repository.TicketRepository;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -46,7 +47,7 @@ public class TicketService {
         Seat selectedSeat = seatService.getById(rawTicketData.getSeatId());
         if (!selectedSeat.isReserved()){
             seatService.reserveById(rawTicketData.getSeatId());
-            Ticket newTicket = new Ticket(null, rawTicketData.getEventId(), newVisitor.getId(), rawTicketData.getSeatId(), rawTicketData.getSectorId(), TicketStatus.CREATED, LocalDateTime.now());
+            Ticket newTicket = new Ticket(null, rawTicketData.getEventId(), newVisitor.getId(), rawTicketData.getSectorId(), rawTicketData.getSeatId(), TicketStatus.CREATED, LocalDateTime.now());
             return ticketRepository.save(newTicket);
         }else{
             throw new TicketReservationException("Данное место уже занято, выберите другое");
@@ -87,10 +88,21 @@ public class TicketService {
 
     }
 
+
+    public byte[] getPdf(UUID uuid, String uri) throws IOException {
+        Ticket ticket = getByUUID(uuid);
+        Event event = eventService.getFullEvent(ticket.getEventId());
+        Visitor visitor = visitorService.getVisitor(ticket.getVisitorId());
+        Seat seat = seatService.getById(ticket.getSeatId());
+        Sector sector = sectorService.getSector(ticket.getSectorId());
+        return PdfGenerationService.generateTicketPdf(ticket, uri, visitor, event, sector, seat);
+    }
+
+
     public Ticket changeTicketStatus(TicketStatusChangingDto ticketStatusChanging) throws TicketStatusChangingException {
         Ticket ticket = getByUUID(ticketStatusChanging.getTicketUUID());
         if (ticketStatusChanging.getNewStatus() != TicketStatus.CREATED){
-            if (ticket.getTicketStatus() == TicketStatus.CREATED){
+            if (ticket.getTicketStatus() != TicketStatus.CREATED){
                 throw new TicketStatusChangingException("Заблокировать/отменить можно только созданный билет");
             }
         }
