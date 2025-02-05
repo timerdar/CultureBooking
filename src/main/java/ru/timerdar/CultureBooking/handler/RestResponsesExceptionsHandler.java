@@ -24,7 +24,7 @@ public class RestResponsesExceptionsHandler {
 
     @ExceptionHandler({EntityNotFoundException.class})
     public ResponseEntity<ErrorMessage> notFoundExceptionHandle(Exception ex, WebRequest webRequest){
-        log.error("Не найдено: {}", ex.getMessage(), ex);
+        log.error("Не найдено: {}", ex.getMessage());
         return new ResponseEntity<>(new ErrorMessage("Not found", ex.getMessage(), webRequest.getDescription(false)), HttpStatus.NOT_FOUND);
     }
 
@@ -36,7 +36,7 @@ public class RestResponsesExceptionsHandler {
 
     @ExceptionHandler({TicketReservationException.class, TicketStatusChangingException.class})
     public ResponseEntity<ErrorMessage> ticketReservationExceptionHandle(Exception ex, WebRequest webRequest){
-        log.error("Ошибка работы с билетом: {}", ex.getMessage(), ex);
+        log.error("Ошибка работы с билетом: {}", ex.getMessage());
         return new ResponseEntity<>(new ErrorMessage("Ticket changing error", ex.getMessage(), webRequest.getDescription(false)), HttpStatus.BAD_REQUEST);
     }
 

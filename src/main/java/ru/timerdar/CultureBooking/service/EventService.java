@@ -31,7 +31,7 @@ public class EventService {
     private AdminService adminService;
 
 
-    @Transactional
+    @Transactional(rollbackFor = IllegalArgumentException.class)
     public Event createEvent(EventCreationDto rawEvent){
         if(rawEvent.isValid() && adminService.exists(rawEvent.getAdminId())){
             Event createdEvent = eventRepository.save(rawEvent.toEvent());
@@ -81,8 +81,14 @@ public class EventService {
         }
     }
 
+    @Transactional
     public void deleteEvent(Long id){
+        for(Sector sector: sectorService.getSectorsListOfEvent(id)){
+            sectorService.delete(sector.getId());
+        }
+
         eventRepository.deleteById(id);
+
     }
 
     public void hideEvent(Long id){

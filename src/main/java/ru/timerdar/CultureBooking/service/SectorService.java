@@ -18,6 +18,9 @@ public class SectorService {
     @Autowired
     private SectorRepository sectorRepository;
 
+    @Autowired
+    private SeatService seatService;
+
     public Sector createSector(SectorCreationDto newSector, Long eventId){
         if(newSector.isValid()){
             return sectorRepository.save(new Sector(null, newSector.getName(), newSector.getColor(), eventId));
@@ -28,6 +31,13 @@ public class SectorService {
 
     public Sector getSector(Long sectorId){
         return sectorRepository.getReferenceById(sectorId);
+    }
+
+    public void delete(Long id){
+       for (Seat seat: seatService.getSeatsBySectorId(id)) {
+           seatService.delete(seat.getId());
+       }
+       sectorRepository.deleteById(id);
     }
 
     public List<Sector> getSectorsListOfEvent(Long eventId){

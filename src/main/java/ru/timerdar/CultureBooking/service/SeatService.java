@@ -36,6 +36,11 @@ public class SeatService {
         return seatRepository.getById(id);
     }
 
+    public void delete(Long id){
+
+        seatRepository.deleteById(id);
+    }
+
     public List<Seat> getSeatsBySectorId(Long sectorId){
         return seatRepository.getBySectorId(sectorId);
     }

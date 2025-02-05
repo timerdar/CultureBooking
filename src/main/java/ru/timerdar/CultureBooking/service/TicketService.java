@@ -130,4 +130,8 @@ public class TicketService {
             return ticket.get();
         }
     }
+
+    public void deleteByEventId(Long eventId){
+        ticketRepository.deleteByEventId(eventId);
+    }
 }

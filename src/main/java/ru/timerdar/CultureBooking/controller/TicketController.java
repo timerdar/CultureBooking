@@ -1,6 +1,8 @@
 package ru.timerdar.CultureBooking.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.timerdar.CultureBooking.dto.TicketCreationDto;
 import ru.timerdar.CultureBooking.exceptions.TicketReservationException;
 import ru.timerdar.CultureBooking.exceptions.TicketStatusChangingException;
+import ru.timerdar.CultureBooking.handler.RestResponsesExceptionsHandler;
 import ru.timerdar.CultureBooking.model.Ticket;
 import ru.timerdar.CultureBooking.dto.MessageResponse;
 import ru.timerdar.CultureBooking.service.PdfGenerationService;
@@ -25,6 +28,8 @@ import java.util.*;
 @RequestMapping("/api/tickets")
 public class TicketController {
 
+    private static final Logger log = LoggerFactory.getLogger(TicketController.class);
+
     @Value("${ru.timerdar.ticket.uri}")
     String QR_URI;
 
@@ -34,6 +39,7 @@ public class TicketController {
     @PostMapping
     public ResponseEntity<Ticket> createTicket(@RequestBody TicketCreationDto rawTicket) throws TicketReservationException {
         Ticket newTicket = ticketService.createTicket(rawTicket);
+        log.info("Создан билет: " + newTicket.getUuid());
         return ResponseEntity.created(URI.create("/api/tickets/" + newTicket.getUuid())).body(newTicket);
 
     }
@@ -71,14 +77,18 @@ public class TicketController {
 
     //admin_permission
     @SecurityRequirement(name = "Authorization")
-    @PostMapping("/ban")
-    public ResponseEntity<?> banTicket(@RequestParam UUID uuid) throws TicketStatusChangingException {
-        return ResponseEntity.ok(ticketService.banTicketByUuid(uuid));
+    @PostMapping("/{uuid}/ban")
+    public ResponseEntity<?> banTicket(@PathVariable UUID uuid) throws TicketStatusChangingException {
+        ticketService.banTicketByUuid(uuid);
+        log.info("Отозван билет: " + uuid);
+        return ResponseEntity.ok().body("");
     }
 
     @PostMapping("/{uuid}/cancel")
     public ResponseEntity<?> cancelTicket(@PathVariable UUID uuid) throws TicketStatusChangingException {
-        return ResponseEntity.ok(ticketService.cancelTicket(uuid));
+        ticketService.cancelTicket(uuid);
+        log.info("Отменен билет: " + uuid);
+        return ResponseEntity.ok().body("");
     }
 
     @PostMapping("/{uuid}/check")

@@ -51,15 +51,18 @@ public class PdfGenerationService {
         document.setTextAlignment(TextAlignment.CENTER);
 
         document.setFont(font).setBold();
+        document.add(new Image(ImageDataFactory.create("src/main/resources/image/ks.png")).scaleAbsolute(pageSize.getWidth()/10, pageSize.getWidth()/10).setHorizontalAlignment(HorizontalAlignment.CENTER));
         document.add(new Paragraph("Билет").setBold().setFontSize(24));
         Link link = new Link("Проверить билет онлайн (ссылка)", PdfAction.createURI(uri + ticket.getUuid()));
         document.add(new Paragraph().setBold().add(link).setFontSize(30));
         BarcodeQRCode qrCode = new BarcodeQRCode(uri + ticket.getUuid());
-        document.add(new Image(qrCode.createFormXObject(pdf)).scaleAbsolute(pageSize.getWidth()/2, pageSize.getWidth()/2).setHorizontalAlignment(HorizontalAlignment.CENTER));
+        document.add(new Image(qrCode.createFormXObject(pdf)).scaleAbsolute(pageSize.getWidth()/3, pageSize.getWidth()/3).setHorizontalAlignment(HorizontalAlignment.CENTER));
         document.add(new Paragraph("Посетитель: " + visitor.toString()).setFontSize(30));
         document.add(new Paragraph("Мероприятие: " + event.getName()).setFontSize(25));
         document.add(new Paragraph( "Дата проведения: " + event.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))).setFontSize(25));
         document.add(new Paragraph("Сектор: " + sector.getName() + " Ряд: " + seat.getRowAndSeatNumber().split("-")[0] + " Место: " + seat.getRowAndSeatNumber().split("-")[1]).setBold().setFontSize(30));
+
+        document.add(new Paragraph("Вы можете отменить билет (освободить бронь) по ссылке выше. При входе билеты будут использованы"));
 
         document.close();
         return outputStream.toByteArray();

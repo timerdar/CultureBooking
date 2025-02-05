@@ -2,6 +2,8 @@ package ru.timerdar.CultureBooking.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.timerdar.CultureBooking.dto.EventCreationDto;
 import ru.timerdar.CultureBooking.dto.SeatStatDto;
+import ru.timerdar.CultureBooking.handler.RestResponsesExceptionsHandler;
 import ru.timerdar.CultureBooking.model.Event;
 import ru.timerdar.CultureBooking.dto.ShortEventDto;
 import ru.timerdar.CultureBooking.dto.MessageResponse;
@@ -16,6 +19,7 @@ import ru.timerdar.CultureBooking.model.Seat;
 import ru.timerdar.CultureBooking.model.Sector;
 import ru.timerdar.CultureBooking.service.EventService;
 import ru.timerdar.CultureBooking.service.PosterService;
+import ru.timerdar.CultureBooking.service.TicketService;
 
 import java.io.IOException;
 import java.net.URI;
@@ -26,11 +30,16 @@ import java.util.*;
 @RequestMapping("/api/events")
 public class EventController{
 
+    private static final Logger log = LoggerFactory.getLogger(EventController.class);
+
     @Autowired
     private EventService eventService;
 
     @Autowired
     private PosterService posterService;
+
+    @Autowired
+    private TicketService ticketService;
 
 
     //admin_permission
@@ -38,6 +47,7 @@ public class EventController{
     @PostMapping
     public ResponseEntity<ShortEventDto> createEvent(@RequestBody EventCreationDto event) throws IllegalArgumentException{
         Event createdEvent = eventService.createEvent(event);
+        log.info("Создано мероприятие: " + createdEvent.getId());
         return ResponseEntity.created(URI.create("/api/events/" + createdEvent.getId())).body(createdEvent.toShort());
     }
 
@@ -68,6 +78,8 @@ public class EventController{
     @DeleteMapping("/{id}")
     public ResponseEntity<MessageResponse> deleteEvent(@PathVariable Long id){
         eventService.deleteEvent(id);
+        ticketService.deleteByEventId(id);
+        log.info("Мероприятие c id = " + id + " удалено");
         return ResponseEntity.ok(new MessageResponse("Мероприятие c id = " + id + " удалено"));
     }
 
@@ -76,6 +88,7 @@ public class EventController{
     @PostMapping("/{id}/hide")
     public ResponseEntity<MessageResponse> hideEvent(@PathVariable Long id){
         eventService.hideEvent(id);
+        log.info("Мероприятие c id = " + id + " скрыто");
         return ResponseEntity.ok(new MessageResponse("Мероприятие с id = " + id + " скрыто"));
     }
 
@@ -84,6 +97,7 @@ public class EventController{
     @PostMapping("/{id}/show")
     public ResponseEntity<MessageResponse> showEvent(@PathVariable Long id){
         eventService.showEvent(id);
+        log.info("Мероприятие c id = " + id + " открыто");
         return ResponseEntity.ok(new MessageResponse("Мероприятие с id = " + id + " открыто"));
     }
 
