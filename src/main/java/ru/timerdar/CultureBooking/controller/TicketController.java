@@ -38,6 +38,12 @@ public class TicketController {
 
     }
 
+    @SecurityRequirement(name = "Authorization")
+    @GetMapping("/{eventId}/byEvent")
+    public ResponseEntity<List<Ticket>> getAllTicketsOfEvent(@PathVariable("eventId") Long eventId){
+        return ResponseEntity.ok(ticketService.getAllTicketsByEvent(eventId));
+    }
+
     @GetMapping("/{uuid}")
     public ResponseEntity<Ticket> getTicketByUUID(@PathVariable UUID uuid){
         return ResponseEntity.ok(ticketService.getByUUID(uuid));

@@ -42,6 +42,7 @@ public class SecurityConfig extends SecurityConfigurerAdapter implements WebMvcC
                                 .requestMatchers(HttpMethod.POST, "/api/events").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PATCH, "/api/events/*").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/api/events/*").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/tickets/*/byEvent").hasRole("ADMIN")
                                 .anyRequest().permitAll()
                                 )
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
