@@ -34,7 +34,6 @@ public class SecurityConfig extends SecurityConfigurerAdapter implements WebMvcC
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity
-                .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authz) ->
                         authz
