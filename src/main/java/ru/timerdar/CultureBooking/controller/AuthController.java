@@ -10,7 +10,7 @@ import ru.timerdar.CultureBooking.dto.AuthorizationResponse;
 import ru.timerdar.CultureBooking.handler.RestResponsesExceptionsHandler;
 import ru.timerdar.CultureBooking.service.AuthenticationProvider;
 
-
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/authenticate")
 public class AuthController {

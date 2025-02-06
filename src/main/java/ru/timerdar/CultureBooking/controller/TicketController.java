@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.*;
 
-
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/tickets")
 public class TicketController {
