@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.*;
 
-@CrossOrigin("*")
+
 @RestController
 @RequestMapping("/api/events")
 public class EventController{

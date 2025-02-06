@@ -18,7 +18,6 @@ import ru.timerdar.CultureBooking.service.AdminService;
 import java.net.URI;
 
 
-@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {

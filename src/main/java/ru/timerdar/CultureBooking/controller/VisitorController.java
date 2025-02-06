@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.timerdar.CultureBooking.model.Visitor;
 import ru.timerdar.CultureBooking.service.VisitorService;
 
-@CrossOrigin("*")
+
 @RestController
 @RequestMapping("/api/visitor")
 public class VisitorController {
