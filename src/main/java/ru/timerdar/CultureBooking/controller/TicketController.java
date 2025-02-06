@@ -93,6 +93,7 @@ public class TicketController {
 
     @PostMapping("/{uuid}/check")
     public ResponseEntity<?> checkTicketOnEnter(@PathVariable UUID uuid) throws TicketStatusChangingException {
+        log.info("Использован билет: " + uuid);
         return ResponseEntity.ok(ticketService.checkTicketOnEnter(uuid));
     }
 }
