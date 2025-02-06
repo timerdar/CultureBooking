@@ -40,6 +40,8 @@ public class TicketService {
     @Value("${ru.timerdar.ticket.timeToCheck}")
     private int timeToStartTicketChecking;
 
+    @Value("${ru.timerdar.ticket.img.path}")
+    private String path;
 
     @Transactional
     public Ticket createTicket(TicketCreationDto rawTicketData) throws TicketReservationException {
@@ -95,7 +97,7 @@ public class TicketService {
         Visitor visitor = visitorService.getVisitor(ticket.getVisitorId());
         Seat seat = seatService.getById(ticket.getSeatId());
         Sector sector = sectorService.getSector(ticket.getSectorId());
-        return PdfGenerationService.generateTicketPdf(ticket, uri, visitor, event, sector, seat);
+        return PdfGenerationService.generateTicketPdf(ticket, uri, visitor, event, sector, seat, path);
     }
 
 
