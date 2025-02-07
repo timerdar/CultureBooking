@@ -15,7 +15,7 @@ import java.util.UUID;
 public interface TicketRepository extends JpaRepository<Ticket, UUID> {
     Optional<Ticket> findByUuid(UUID uuid);
     Optional<Ticket> findByVisitorIdAndEventId(Long visitorId, Long eventId);
-    @Query(value = "select * from Tickets where ticket_status = 'CREATED' or ticket_status = 'USED'", nativeQuery = true)
+    @Query(value = "select * from Tickets where event_id = ?1 and (ticket_status = 'CREATED' or ticket_status = 'USED')", nativeQuery = true)
     List<Ticket> findAllByEventId(Long eventId);
     List<Ticket> findAllByEventIdAndSectorId(Long eventId, Long sectorId);
     List<Ticket> findAllByVisitorId(Long visitorId);
