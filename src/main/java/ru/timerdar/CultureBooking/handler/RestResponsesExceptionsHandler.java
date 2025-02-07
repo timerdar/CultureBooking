@@ -42,7 +42,7 @@ public class RestResponsesExceptionsHandler {
 
     @ExceptionHandler({WrongPasswordException.class, ExpJwtException.class, AccessDeniedException.class})
     public ResponseEntity<ErrorMessage> authenticationExceptionHandle(Exception ex, WebRequest webRequest){
-        log.error("Ошибка пароля: {}", ex.getMessage(), ex);
+        log.error("Ошибка пароля: {}", ex.getMessage());
         return new ResponseEntity<>(new ErrorMessage("Authentication error", ex.getMessage(), webRequest.getDescription(false)), HttpStatus.UNAUTHORIZED);
     }
 

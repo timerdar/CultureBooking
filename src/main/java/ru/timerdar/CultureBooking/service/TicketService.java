@@ -77,13 +77,8 @@ public class TicketService {
         Optional<Ticket> ticket = ticketRepository.findByUuid(ticketUuid);
         if (ticket.isPresent()){
             Event event = eventService.getFullEvent(ticket.get().getEventId());
-            LocalDateTime ticketCheckTime = event.getDate().minusMinutes(timeToStartTicketChecking);
-            if(LocalDateTime.now().isBefore(ticketCheckTime)){
-                TicketStatusChangingDto changingDto = new TicketStatusChangingDto(ticketUuid, TicketStatus.USED);
-                return this.changeTicketStatus(changingDto);
-            }else{
-                throw new TicketStatusChangingException("Подтвердить присутствие необходимо не раньше, чем за " + ticketCheckTime + " минут до начала мероприятия");
-            }
+            TicketStatusChangingDto changingDto = new TicketStatusChangingDto(ticketUuid, TicketStatus.USED);
+            return this.changeTicketStatus(changingDto);
         }else{
             throw new EntityNotFoundException("Билет не найден");
         }
