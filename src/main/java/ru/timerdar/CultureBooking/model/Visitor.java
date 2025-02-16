@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.timerdar.CultureBooking.dto.VisitorCreationDto;
 
 @Entity
 @Getter @Setter
@@ -29,5 +30,13 @@ public class Visitor {
     @Override
     public String toString() {
         return surname + " " + name + " " + fathername;
+    }
+
+    public VisitorCreationDto toDto(){
+        VisitorCreationDto dto = new VisitorCreationDto();
+        dto.setFathername(fathername);
+        dto.setName(name);
+        dto.setSurname(surname);
+        return dto;
     }
 }

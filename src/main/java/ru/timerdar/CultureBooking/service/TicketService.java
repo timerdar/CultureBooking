@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.timerdar.CultureBooking.dto.TicketCreationDto;
+import ru.timerdar.CultureBooking.dto.TicketInfoDto;
 import ru.timerdar.CultureBooking.dto.TicketStatusChangingDto;
+import ru.timerdar.CultureBooking.dto.VisitorCreationDto;
 import ru.timerdar.CultureBooking.exceptions.TicketReservationException;
 import ru.timerdar.CultureBooking.exceptions.TicketStatusChangingException;
 import ru.timerdar.CultureBooking.model.*;
@@ -126,6 +128,18 @@ public class TicketService {
         }else{
             return ticket.get();
         }
+    }
+
+    public TicketInfoDto getInfo(UUID uuid){
+        Ticket ticket = getByUUID(uuid);
+        Visitor visitor = visitorService.getVisitor(ticket.getVisitorId());
+        Event event = eventService.getFullEvent(ticket.getEventId());
+        TicketInfoDto result = new TicketInfoDto();
+        result.setEvent(event.toShort());
+        result.setUuid(uuid);
+        result.setVisitor(visitor.toDto());
+        result.setStatus(ticket.getTicketStatus());
+        return result;
     }
 
     public void deleteByEventId(Long eventId){

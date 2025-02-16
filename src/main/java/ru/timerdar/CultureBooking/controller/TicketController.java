@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.timerdar.CultureBooking.dto.TicketCreationDto;
+import ru.timerdar.CultureBooking.dto.TicketInfoDto;
 import ru.timerdar.CultureBooking.exceptions.TicketReservationException;
 import ru.timerdar.CultureBooking.exceptions.TicketStatusChangingException;
 import ru.timerdar.CultureBooking.handler.RestResponsesExceptionsHandler;
@@ -95,5 +96,10 @@ public class TicketController {
     public ResponseEntity<?> checkTicketOnEnter(@PathVariable UUID uuid) throws TicketStatusChangingException {
         log.info("Использован билет: " + uuid);
         return ResponseEntity.ok(ticketService.checkTicketOnEnter(uuid));
+    }
+
+    @GetMapping("/{uuid}/info")
+    public ResponseEntity<TicketInfoDto> getTicketInfo(@PathVariable UUID uuid){
+        return ResponseEntity.ok(ticketService.getInfo(uuid));
     }
 }
