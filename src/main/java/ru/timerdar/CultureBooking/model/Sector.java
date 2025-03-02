@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "sectors")
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter @Getter

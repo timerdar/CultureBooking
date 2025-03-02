@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.java.Log;
 
 @Entity
 @Table(name = "posters")
@@ -16,6 +17,8 @@ import lombok.Setter;
 public class Poster {
 
     @Id
+    private Long id;
+
     @Column(name = "eventId", nullable = false)
     private Long eventId;
 

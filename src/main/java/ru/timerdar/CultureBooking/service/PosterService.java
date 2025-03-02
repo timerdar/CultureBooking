@@ -18,7 +18,7 @@ public class PosterService {
         if (posterRepository.existsById(id)){
             posterRepository.updatePoster(id, image.getBytes());
         }else{
-            posterRepository.save(new Poster(id, image.getBytes()));
+            posterRepository.save(new Poster(null, id, image.getBytes()));
         }
         return posterRepository.getReferenceById(id);
     }

@@ -134,11 +134,17 @@ public class TicketService {
         Ticket ticket = getByUUID(uuid);
         Visitor visitor = visitorService.getVisitor(ticket.getVisitorId());
         Event event = eventService.getFullEvent(ticket.getEventId());
+        Sector sector = sectorService.getSector(ticket.getSectorId());
+        Seat seat = seatService.getById(ticket.getSeatId());
         TicketInfoDto result = new TicketInfoDto();
         result.setEvent(event.toShort());
         result.setUuid(uuid);
         result.setVisitor(visitor.toDto());
         result.setStatus(ticket.getTicketStatus());
+        result.setSeat(seat.getRowAndSeatNumber());
+        result.setSector(sector.getName());
+        result.setCreated(ticket.getCreated());
+        result.setSectorColor(sector.getColor());
         return result;
     }
 
