@@ -11,4 +11,10 @@ import lombok.Setter;
 public class SeatStatDto {
     private int reservedCount;
     private int unreservedCount;
+
+    public SeatStatDto plus(SeatStatDto seatStatDto){
+        this.reservedCount += seatStatDto.reservedCount;
+        this.unreservedCount += seatStatDto.unreservedCount;
+        return this;
+    }
 }

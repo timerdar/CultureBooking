@@ -9,12 +9,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.timerdar.CultureBooking.dto.EventCreationDto;
-import ru.timerdar.CultureBooking.dto.SeatStatDto;
+import ru.timerdar.CultureBooking.dto.*;
 import ru.timerdar.CultureBooking.handler.RestResponsesExceptionsHandler;
 import ru.timerdar.CultureBooking.model.Event;
-import ru.timerdar.CultureBooking.dto.ShortEventDto;
-import ru.timerdar.CultureBooking.dto.MessageResponse;
+import ru.timerdar.CultureBooking.model.Poster;
 import ru.timerdar.CultureBooking.model.Seat;
 import ru.timerdar.CultureBooking.model.Sector;
 import ru.timerdar.CultureBooking.service.EventService;
@@ -121,10 +119,20 @@ public class EventController{
         return ResponseEntity.ok(eventService.getSeat(eventId, sectorId, seatId));
     }
 
+    @GetMapping("/{eventId}/allSeats")
+    public ResponseEntity<List<SectorWithSeatsDto>> getAllSeatsOfEvent(@PathVariable Long eventId){
+        return ResponseEntity.ok(eventService.getAllSeatsOfEvent(eventId));
+    }
+
+    @GetMapping("/{eventId}/detailed-statictics")
+    public ResponseEntity<List<SectorSeatsStatDto>> getDetailedStatictic(@PathVariable Long eventId){
+        return ResponseEntity.ok(eventService.getStatOfEverySector(eventId));
+    }
+
     @Transactional
     @SecurityRequirement(name = "Authorization")
     @PostMapping(value = "/poster", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> uploadPoster(@RequestParam Long eventId, @RequestParam("file") MultipartFile file) throws IOException{
+    public ResponseEntity<Poster> uploadPoster(@RequestParam Long eventId, @RequestParam("file") MultipartFile file) throws IOException{
         return ResponseEntity.ok(posterService.savePoster(eventId, file));
     }
 

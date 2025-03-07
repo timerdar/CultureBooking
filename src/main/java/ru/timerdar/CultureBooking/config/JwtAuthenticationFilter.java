@@ -1,6 +1,7 @@
 package ru.timerdar.CultureBooking.config;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,16 +35,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try{
             String authHeader = request.getHeader("Authorization");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
-        String jwt = authHeader.substring(7);
-        String username = jwtService.extractUsername(jwt);
+            String jwt = authHeader.substring(7);
+            String username = jwtService.extractUsername(jwt);
 
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails adminDetails = adminService.loadUserByUsername(username);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails adminDetails = adminService.loadUserByUsername(username);
 
             if (jwtService.isTokenValid(jwt, adminDetails)){
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
@@ -53,9 +54,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
-        }catch (ExpiredJwtException e){
+        }catch (JwtException e){
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
         }
         filterChain.doFilter(request, response);
     }

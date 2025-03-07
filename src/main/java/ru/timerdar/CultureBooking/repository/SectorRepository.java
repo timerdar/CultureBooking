@@ -10,6 +10,6 @@ import java.util.List;
 
 @RepositoryRestResource(exported = false)
 public interface SectorRepository extends JpaRepository<Sector, Long> {
-    @Query(value = "select * from Sector where event_id = ?1", nativeQuery = true)
+    @Query(value = "select * from Sectors where event_id = ?1", nativeQuery = true)
     List<Sector> findSectorsOfEvent(Long eventId);
 }

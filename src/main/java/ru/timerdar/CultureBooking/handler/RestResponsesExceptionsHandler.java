@@ -1,5 +1,6 @@
 package ru.timerdar.CultureBooking.handler;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,7 @@ public class RestResponsesExceptionsHandler {
         return new ResponseEntity<>(new ErrorMessage("Ticket changing error", ex.getMessage(), webRequest.getDescription(false)), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({WrongPasswordException.class, ExpJwtException.class, AccessDeniedException.class})
+    @ExceptionHandler({WrongPasswordException.class, JwtException.class, AccessDeniedException.class})
     public ResponseEntity<ErrorMessage> authenticationExceptionHandle(Exception ex, WebRequest webRequest){
         log.error("Ошибка пароля: {}", ex.getMessage());
         return new ResponseEntity<>(new ErrorMessage("Authentication error", ex.getMessage(), webRequest.getDescription(false)), HttpStatus.UNAUTHORIZED);

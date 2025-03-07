@@ -14,13 +14,13 @@ public class PosterService {
     @Autowired
     private PosterRepository posterRepository;
 
-    public Poster savePoster(Long id, MultipartFile image) throws IOException{
-        if (posterRepository.existsById(id)){
-            posterRepository.updatePoster(id, image.getBytes());
+    public Poster savePoster(Long eventId, MultipartFile image) throws IOException{
+        if (posterRepository.existsByEventId(eventId)){
+            posterRepository.updatePoster(eventId, image.getBytes());
         }else{
-            posterRepository.save(new Poster(null, id, image.getBytes()));
+            posterRepository.save(new Poster(null, eventId, image.getBytes()));
         }
-        return posterRepository.getReferenceById(id);
+        return posterRepository.getReferenceById(eventId);
     }
 
     public Poster getPosterOfEvent(Long id){
