@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -41,7 +42,7 @@ public class RestResponsesExceptionsHandler {
         return new ResponseEntity<>(new ErrorMessage("Ticket changing error", ex.getMessage(), webRequest.getDescription(false)), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({WrongPasswordException.class, JwtException.class, AccessDeniedException.class})
+    @ExceptionHandler({WrongPasswordException.class, JwtException.class, AccessDeniedException.class, UsernameNotFoundException.class})
     public ResponseEntity<ErrorMessage> authenticationExceptionHandle(Exception ex, WebRequest webRequest){
         log.error("Ошибка пароля: {}", ex.getMessage());
         return new ResponseEntity<>(new ErrorMessage("Authentication error", ex.getMessage(), webRequest.getDescription(false)), HttpStatus.UNAUTHORIZED);

@@ -13,7 +13,7 @@ public class SectorSeatsStatDto extends SeatStatDto{
     private Sector sector;
 
     public SectorSeatsStatDto(int reservedCount, int unreservedCount, Sector sector){
-        super(reservedCount, reservedCount);
+        super(reservedCount, unreservedCount);
         this.sector = sector;
     }
 }
