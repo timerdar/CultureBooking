@@ -1,10 +1,12 @@
 package ru.timerdar.CultureBooking.service;
 
 import com.itextpdf.barcodes.BarcodeQRCode;
+import com.itextpdf.forms.form.element.TextArea;
 import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.io.image.ImageType;
+import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.Rectangle;
@@ -23,7 +25,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import ru.timerdar.CultureBooking.model.*;
+import ru.timerdar.CultureBooking.model.Event;
 
+import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -45,24 +49,18 @@ public class PdfGenerationService {
         ImageData imageData = ImageDataFactory.create(poster.getImageData());
         Image background = new Image(imageData);
 
-        //background.scaleAbsolute(pageSize.getWidth(), pageSize.getHeight());
-        //background.setFixedPosition(0, 0);
-
-        //document.add(background);
-
         document.setTextAlignment(TextAlignment.CENTER);
 
         document.setFont(font).setBold();
         document.add(new Image(ImageDataFactory.create(path + "image/ks.png")).scaleAbsolute(pageSize.getWidth()/10, pageSize.getWidth()/10).setHorizontalAlignment(HorizontalAlignment.CENTER));
-        document.add(background.scaleAbsolute(pageSize.getWidth()/2, pageSize.getWidth()/2).setHorizontalAlignment(HorizontalAlignment.CENTER));
+        document.add(background.scaleToFit(background.getImageWidth()/4, background.getImageHeight()/4).setHorizontalAlignment(HorizontalAlignment.CENTER));
         document.add(new Paragraph("Билет").setBold().setFontSize(24));
-
-        Link link = new Link("Проверить билет онлайн (ссылка)", PdfAction.createURI(uri + ticket.getUuid()));
-        document.add(new Paragraph().setBold().add(link).setFontSize(30));
+        Link link = new Link("Проверить билет онлайн", PdfAction.createURI(uri + ticket.getUuid()));
+        document.add(new Paragraph().setBold().add(link).setFontSize(15).setFontColor(ColorConstants.GREEN));
         BarcodeQRCode qrCode = new BarcodeQRCode(uri + ticket.getUuid());
-        document.add(new Paragraph("Посетитель: " + visitor.toString()).setFontSize(30));
+        document.add(new Paragraph("Посетитель: " + visitor.toString()).setFontSize(25));
         document.add(new Paragraph("Мероприятие: " + event.getName()).setFontSize(25));
-        document.add(new Paragraph("Сектор: " + sector.getName() + " Ряд: " + seat.getRowAndSeatNumber().split("-")[0] + " Место: " + seat.getRowAndSeatNumber().split("-")[1]).setBold().setFontSize(30));
+        document.add(new Paragraph("Сектор: " + sector.getName() + " Ряд: " + seat.getRowAndSeatNumber().split("-")[0] + " Место: " + seat.getRowAndSeatNumber().split("-")[1]).setFontSize(30));
         document.add(new Paragraph( "Дата проведения: " + event.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))).setFontSize(25));
         document.add(new Image(qrCode.createFormXObject(pdf)).scaleAbsolute(pageSize.getWidth()/10, pageSize.getWidth()/10).setHorizontalAlignment(HorizontalAlignment.CENTER));
 
