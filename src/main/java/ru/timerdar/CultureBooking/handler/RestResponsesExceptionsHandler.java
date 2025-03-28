@@ -1,6 +1,7 @@
 package ru.timerdar.CultureBooking.handler;
 
 import io.jsonwebtoken.JwtException;
+import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,7 @@ public class RestResponsesExceptionsHandler {
         return new ResponseEntity<>(new ErrorMessage("Not found", ex.getMessage(), webRequest.getDescription(false)), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({IllegalArgumentException.class})
+    @ExceptionHandler({IllegalArgumentException.class, MessagingException.class})
     public ResponseEntity<ErrorMessage> illegalArgsExceptionHandle(Exception ex, WebRequest webRequest){
         log.error("Неверные данные: {}", ex.getMessage(), ex);
         return new ResponseEntity<>(new ErrorMessage("Bad Request", ex.getMessage(), webRequest.getDescription(false)), HttpStatus.BAD_REQUEST);

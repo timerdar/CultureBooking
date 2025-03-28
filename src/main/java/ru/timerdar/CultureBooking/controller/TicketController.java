@@ -1,6 +1,7 @@
 package ru.timerdar.CultureBooking.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,11 +39,10 @@ public class TicketController {
     private TicketService ticketService;
 
     @PostMapping
-    public ResponseEntity<Ticket> createTicket(@RequestBody TicketCreationDto rawTicket) throws TicketReservationException {
+    public ResponseEntity<Ticket> createTicket(@RequestBody TicketCreationDto rawTicket) throws TicketReservationException, MessagingException, IOException {
         Ticket newTicket = ticketService.createTicket(rawTicket);
         log.info("Создан билет: " + newTicket.getUuid());
         return ResponseEntity.created(URI.create("/api/tickets/" + newTicket.getUuid())).body(newTicket);
-
     }
 
     @SecurityRequirement(name = "Authorization")

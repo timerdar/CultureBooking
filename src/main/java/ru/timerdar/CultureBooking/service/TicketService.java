@@ -1,5 +1,6 @@
 package ru.timerdar.CultureBooking.service;
 
+import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +43,9 @@ public class TicketService {
     @Autowired
     private PosterService posterService;
 
+    @Autowired
+    private EmailService emailService;
+
     @Value("${ru.timerdar.ticket.timeToCheck}")
     private int timeToStartTicketChecking;
 
@@ -49,13 +53,15 @@ public class TicketService {
     private String path;
 
     @Transactional
-    public Ticket createTicket(TicketCreationDto rawTicketData) throws TicketReservationException {
+    public Ticket createTicket(TicketCreationDto rawTicketData) throws TicketReservationException, IOException, MessagingException {
         Visitor newVisitor = visitorService.createOrUseExistingVisitor(rawTicketData.getVisitor().toVisitor());
         Seat selectedSeat = seatService.getById(rawTicketData.getSeatId());
         if (!selectedSeat.isReserved()){
             seatService.reserveById(rawTicketData.getSeatId());
             Ticket newTicket = new Ticket(null, rawTicketData.getEventId(), newVisitor.getId(), rawTicketData.getSectorId(), rawTicketData.getSeatId(), TicketStatus.CREATED, LocalDateTime.now());
-            return ticketRepository.save(newTicket);
+            Ticket createdTicket = ticketRepository.save(newTicket);
+            emailService.sendTicket(getInfo(createdTicket.getUuid()), getPdf(createdTicket.getUuid(), ""));
+            return createdTicket;
         }else{
             throw new TicketReservationException("Данное место уже занято, выберите другое");
         }

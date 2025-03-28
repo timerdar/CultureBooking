@@ -1,6 +1,7 @@
 package ru.timerdar.CultureBooking.controller;
 
 
+import jakarta.mail.MessagingException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import ru.timerdar.CultureBooking.dto.ShortAdminDto;
 import ru.timerdar.CultureBooking.handler.RestResponsesExceptionsHandler;
 import ru.timerdar.CultureBooking.model.Admin;
 import ru.timerdar.CultureBooking.service.AdminService;
+import ru.timerdar.CultureBooking.service.EmailService;
 
 import java.net.URI;
 
@@ -25,6 +27,8 @@ public class AdminController {
 
     private static final Logger log = LoggerFactory.getLogger(AdminController.class);
 
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private AdminService adminService;
@@ -40,4 +44,9 @@ public class AdminController {
     public ResponseEntity<ShortAdminDto> getAdminInfo(@PathVariable Long id){
         return ResponseEntity.ok(adminService.getAdminInfo(id));
     }
+
+//    @GetMapping("/mail")
+//    public void sendMail() throws MessagingException {
+//        emailService.sendTicket();
+//    }
 }

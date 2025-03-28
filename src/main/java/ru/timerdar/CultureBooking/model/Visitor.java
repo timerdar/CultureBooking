@@ -27,9 +27,12 @@ public class Visitor {
     @Column(nullable = false)
     private String fathername;
 
+    @Column(nullable = false)
+    private String email;
+
     @Override
     public String toString() {
-        return surname + " " + name + " " + fathername;
+        return surname + " " + name + " " + fathername + " " + email;
     }
 
     public VisitorCreationDto toDto(){
@@ -37,6 +40,7 @@ public class Visitor {
         dto.setFathername(fathername);
         dto.setName(name);
         dto.setSurname(surname);
+        dto.setEmail(email);
         return dto;
     }
 }
