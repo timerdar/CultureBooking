@@ -171,4 +171,5 @@ public class EventService {
         }
         return new SeatStatDto(reserved, free);
     }
+
 }

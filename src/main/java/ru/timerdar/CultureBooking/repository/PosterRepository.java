@@ -13,5 +13,7 @@ public interface PosterRepository extends JpaRepository<Poster, Long> {
     @Query(value = "update Poster set imageData = ?2 where eventId = ?1")
     void updatePoster(Long id, byte[] image);
 
+    Poster getByEventId(Long eventId);
+
     boolean existsByEventId(Long eventId);
 }

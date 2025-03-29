@@ -56,7 +56,9 @@ public class TicketService {
     public Ticket createTicket(TicketCreationDto rawTicketData) throws TicketReservationException, IOException, MessagingException {
         Visitor newVisitor = visitorService.createOrUseExistingVisitor(rawTicketData.getVisitor().toVisitor());
         Seat selectedSeat = seatService.getById(rawTicketData.getSeatId());
-        if (!selectedSeat.isReserved()){
+        if (!selectedSeat.isReserved()
+                && sectorService.sectorRefersToEvent(rawTicketData.getEventId(), rawTicketData.getSectorId())
+                && seatService.seatRefersToSector(rawTicketData.getSectorId(), rawTicketData.getSeatId())){
             seatService.reserveById(rawTicketData.getSeatId());
             Ticket newTicket = new Ticket(null, rawTicketData.getEventId(), newVisitor.getId(), rawTicketData.getSectorId(), rawTicketData.getSeatId(), TicketStatus.CREATED, LocalDateTime.now());
             Ticket createdTicket = ticketRepository.save(newTicket);
@@ -67,6 +69,7 @@ public class TicketService {
         }
     }
 
+    //TODO добавить отправку письма на почту
     @Transactional
     public Ticket banTicketByUuid(UUID ticketUuid) throws TicketStatusChangingException {
         TicketStatusChangingDto changingDto = new TicketStatusChangingDto(ticketUuid, TicketStatus.BANNED);
@@ -75,6 +78,7 @@ public class TicketService {
         return bannedTicket;
     }
 
+    //TODO добавить отправку письма на почту
     @Transactional
     public Ticket cancelTicket(UUID ticketUuid) throws TicketStatusChangingException {
         TicketStatusChangingDto changingDto = new TicketStatusChangingDto(ticketUuid, TicketStatus.CANCELED);
@@ -83,6 +87,7 @@ public class TicketService {
         return canceledTicket;
     }
 
+    //TODO устранить?
     @Transactional
     public Ticket checkTicketOnEnter(UUID ticketUuid) throws TicketStatusChangingException{
         Optional<Ticket> ticket = ticketRepository.findByUuid(ticketUuid);
@@ -104,7 +109,7 @@ public class TicketService {
         Seat seat = seatService.getById(ticket.getSeatId());
         Sector sector = sectorService.getSector(ticket.getSectorId());
         Poster poster = posterService.getPosterOfEvent(event.getId());
-        return PdfGenerationService.generateTicketPdf(ticket, uri, visitor, event, sector, seat, path, poster);
+        return PdfGenerationService.generateTicketPdf(ticket, visitor, event, sector, seat, path, poster);
     }
 
 

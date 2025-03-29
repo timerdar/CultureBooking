@@ -24,7 +24,7 @@ public class PosterService {
     }
 
     public Poster getPosterOfEvent(Long id){
-        return posterRepository.getReferenceById(id);
+        return posterRepository.getByEventId(id);
     }
 
 }

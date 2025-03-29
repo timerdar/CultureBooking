@@ -30,6 +30,7 @@ public class EmailService {
 
     @Value("${spring.mail.username}") private String senderEmail;
 
+    //TODO Сделать нормальное оформление письма с билетом
     public void sendTicket(TicketInfoDto ticketInfoDto, byte[] ticketPdf) throws MessagingException {
 
         MimeMessage message = mailSender.createMimeMessage();
@@ -39,10 +40,10 @@ public class EmailService {
         helper.setTo(ticketInfoDto.getVisitor().getEmail());
         helper.setSubject(ticketInfoDto.getEvent().getName());
         helper.setText("Уважаемый(-ая) " + ticketInfoDto.getVisitor().getFio() + "!" +
-                "Команда Культурной среды благодарит за бронирование места на мероприятие \"" + ticketInfoDto.getEvent().getName() + "\"" +
-                "Сектор: " + ticketInfoDto.getSector() +
-                "Ряд: " + ticketInfoDto.getSeat().split("-")[0] +
-                "Место: " + ticketInfoDto.getSeat().split("-")[1] +
+                "\nКоманда Культурной среды благодарит за бронирование места на мероприятие \"" + ticketInfoDto.getEvent().getName() + "\"" +
+                "\nСектор: " + ticketInfoDto.getSector() +
+                "\nРяд: " + ticketInfoDto.getSeat().split("-")[0] +
+                "\nМесто: " + ticketInfoDto.getSeat().split("-")[1] +
                 "\n" +
                 "Будем ждать!");
 
@@ -51,8 +52,11 @@ public class EmailService {
         helper.addAttachment("ticket.pdf", bads);
 
         mailSender.send(message);
-
-
     }
+
+    //TODO Сделать метод для отмены билета
+    //TODO Сделать метод для отзыва билета
+
+
 
 }
