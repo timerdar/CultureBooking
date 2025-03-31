@@ -12,4 +12,5 @@ public interface VisitorRepository extends JpaRepository<Visitor, Long> {
 
     Optional<Visitor> findByNameAndSurnameAndFathername(String name, String surname, String fathername);
     boolean existsByNameAndSurnameAndFathername(String name, String surname, String fathername);
+    Optional<Visitor> findByEmail(String email);
 }

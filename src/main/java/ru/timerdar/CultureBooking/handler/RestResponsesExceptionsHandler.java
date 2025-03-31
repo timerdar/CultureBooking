@@ -13,10 +13,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import ru.timerdar.CultureBooking.dto.ErrorMessage;
-import ru.timerdar.CultureBooking.exceptions.ExpJwtException;
-import ru.timerdar.CultureBooking.exceptions.TicketReservationException;
-import ru.timerdar.CultureBooking.exceptions.TicketStatusChangingException;
-import ru.timerdar.CultureBooking.exceptions.WrongPasswordException;
+import ru.timerdar.CultureBooking.exceptions.*;
 
 import java.io.IOException;
 
@@ -60,6 +57,7 @@ public class RestResponsesExceptionsHandler {
         log.error("Глобальная ошибка: {}", ex.getMessage(), ex);
         return new ResponseEntity<>(new ErrorMessage("Unexpected error", ex.getMessage(), webRequest.getDescription(false)), HttpStatus.BAD_REQUEST);
     }
+
 
 
 }

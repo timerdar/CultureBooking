@@ -75,7 +75,4 @@ public class AdminService implements UserDetailsService{
         adminRepository.getReferenceById(id);
         return true;
     }
-
-
-
 }

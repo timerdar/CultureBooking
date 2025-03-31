@@ -44,9 +44,4 @@ public class AdminController {
     public ResponseEntity<ShortAdminDto> getAdminInfo(@PathVariable Long id){
         return ResponseEntity.ok(adminService.getAdminInfo(id));
     }
-
-//    @GetMapping("/mail")
-//    public void sendMail() throws MessagingException {
-//        emailService.sendTicket();
-//    }
 }

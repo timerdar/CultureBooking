@@ -19,4 +19,5 @@ public class VisitorCreationDto {
     public String getFio(){
         return this.surname + " " + this.name + " " + this.fathername;
     }
+
 }
