@@ -52,6 +52,7 @@ public class EmailService {
         log.info("Билет отправлен на почту:" + dest);
     }
 
+    @Async
     public void sendBanTicketMessage(TicketInfoDto ticketInfo, ShortAdminDto admin) throws MessagingException {
         String dest = ticketInfo.getVisitor().getEmail();
         String subj = "Администратор отозвал билет на " + ticketInfo.getEvent().getName();
