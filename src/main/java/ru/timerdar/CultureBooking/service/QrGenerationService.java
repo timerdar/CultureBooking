@@ -17,7 +17,6 @@ import java.util.UUID;
 @Getter @Setter
 @AllArgsConstructor
 @Service
-//TODO убрать класс/преобразовать для создания qr мероприятия
 public class QrGenerationService {
 
     public static byte[] generateTicketQrImage(UUID ticketUuid, String uri) throws IOException {

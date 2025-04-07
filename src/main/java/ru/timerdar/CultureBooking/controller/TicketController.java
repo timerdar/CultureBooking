@@ -70,8 +70,7 @@ public class TicketController {
     @GetMapping(value = "/{uuid}", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<?> getTicketPdf(@PathVariable UUID uuid) throws IOException {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentDispositionFormData("attachment", "ticket-" + uuid + ".pdf");
-
+        headers.setContentDispositionFormData("attachment", "ticket.pdf");
         byte[] pdf = ticketService.getPdf(uuid);
         return ResponseEntity.ok().headers(headers).body(pdf);
     }

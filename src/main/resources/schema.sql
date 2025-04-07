@@ -72,6 +72,6 @@ CREATE TABLE IF NOT EXISTS public.tickets (
     CONSTRAINT fk_ticket_seat FOREIGN KEY (seat_id) REFERENCES seats (id) on delete cascade,
     CONSTRAINT fk_ticket_sector FOREIGN KEY (sector_id) REFERENCES sectors (id) on delete cascade,
     CONSTRAINT fk_ticket_visitor FOREIGN KEY (visitor_id) REFERENCES visitors (id) on delete cascade,
-    CONSTRAINT unique_event_seat UNIQUE (event_id, seat_id)
+    CONSTRAINT unique_event_seat_status UNIQUE (event_id, seat_id, ticket_status)
 
 );

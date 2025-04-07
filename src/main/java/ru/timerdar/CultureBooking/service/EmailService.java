@@ -1,25 +1,20 @@
 package ru.timerdar.CultureBooking.service;
 
 
-import jakarta.activation.DataSource;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import jakarta.mail.util.ByteArrayDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.InputStreamSource;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import ru.timerdar.CultureBooking.dto.ShortAdminDto;
 import ru.timerdar.CultureBooking.dto.TicketInfoDto;
-import ru.timerdar.CultureBooking.model.Admin;
-import ru.timerdar.CultureBooking.model.Ticket;
-import ru.timerdar.CultureBooking.model.Visitor;
 
 import java.io.*;
 
@@ -29,28 +24,32 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
+    private static final Logger log = LoggerFactory.getLogger(EmailService.class);
+
     @Value("${spring.mail.username}") private String senderEmail;
 
 
+    @Async
     public void sendTicket(TicketInfoDto ticketInfoDto, byte[] ticketPdf) throws MessagingException, UnsupportedEncodingException {
         String dest = ticketInfoDto.getVisitor().getEmail();
         String subj = "Билет на мероприятие \"" + ticketInfoDto.getEvent().getName() + "\"";
-        String text = "Уважаемый(-ая) " + ticketInfoDto.getVisitor().getFio() + "!" +
-                "\nКоманда Культурной среды благодарит за бронирование места на мероприятие \"" + ticketInfoDto.getEvent().getName() + "\"" +
-                "\nСектор: " + ticketInfoDto.getSector() +
-                "\nРяд: " + ticketInfoDto.getSeat().split("-")[0] +
-                "\nМесто: " + ticketInfoDto.getSeat().split("-")[1] +
-                "\n" +
-                "Будем ждать!";
+
+        String text = "<p>Команда Культурной среды благодарит за бронирование места на мероприятие: <span>" + ticketInfoDto.getEvent().getName() + "</span></p>\n" +
+                "<p>Сектор: <span>" + ticketInfoDto.getSector() + "</span> Ряд <span>" + ticketInfoDto.getSeat().split("-")[0] +
+                "</span> Место <span>" + ticketInfoDto.getSeat().split("-")[1] + "</span></p>" +
+                "<p>Будем ждать <b>"+ ticketInfoDto.getEvent().getDate().toString() + "</b></p>" +
+                "<p><a href=\"https://kulturnaya-sreda.ru/tickets/" + ticketInfoDto.getUuid() + "\">Отменить билет</a></p>";
+
         MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        helper.setFrom(senderEmail);
-        helper.setText(text);
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        helper.setFrom(new InternetAddress(senderEmail, "Культурная среда", "UTF-8"));
         helper.setTo(dest);
         helper.setSubject(subj);
+        helper.setText(text, true); // указываем, что текст — это HTML
         helper.addAttachment("ticket.pdf", new ByteArrayResource(ticketPdf));
 
         mailSender.send(message);
+        log.info("Билет отправлен на почту:" + dest);
     }
 
     public void sendBanTicketMessage(TicketInfoDto ticketInfo, ShortAdminDto admin) throws MessagingException {
@@ -63,6 +62,7 @@ public class EmailService {
         mailSender.send(createMessage(dest, subj, text));
     }
 
+    @Async
     public void sendCancelTicketMessage(TicketInfoDto ticketInfo) throws MessagingException {
         String dest = ticketInfo.getVisitor().getEmail();
         String subj = "Отмена билета на " + ticketInfo.getEvent().getName();
