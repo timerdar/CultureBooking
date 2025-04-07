@@ -1,14 +1,12 @@
 package ru.timerdar.CultureBooking.service;
 
+import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.timerdar.CultureBooking.dto.TicketCreationDto;
-import ru.timerdar.CultureBooking.dto.TicketInfoDto;
-import ru.timerdar.CultureBooking.dto.TicketStatusChangingDto;
-import ru.timerdar.CultureBooking.dto.VisitorCreationDto;
+import ru.timerdar.CultureBooking.dto.*;
 import ru.timerdar.CultureBooking.exceptions.TicketReservationException;
 import ru.timerdar.CultureBooking.exceptions.TicketStatusChangingException;
 import ru.timerdar.CultureBooking.model.*;
@@ -42,6 +40,12 @@ public class TicketService {
     @Autowired
     private PosterService posterService;
 
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private AdminService adminService;
+
     @Value("${ru.timerdar.ticket.timeToCheck}")
     private int timeToStartTicketChecking;
 
@@ -49,58 +53,52 @@ public class TicketService {
     private String path;
 
     @Transactional
-    public Ticket createTicket(TicketCreationDto rawTicketData) throws TicketReservationException {
+    public Ticket createTicket(TicketCreationDto rawTicketData) throws TicketReservationException, IOException, MessagingException {
         Visitor newVisitor = visitorService.createOrUseExistingVisitor(rawTicketData.getVisitor().toVisitor());
         Seat selectedSeat = seatService.getById(rawTicketData.getSeatId());
-        if (!selectedSeat.isReserved()){
+        if (!selectedSeat.isReserved()
+                && sectorService.sectorRefersToEvent(rawTicketData.getEventId(), rawTicketData.getSectorId())
+                && seatService.seatRefersToSector(rawTicketData.getSectorId(), rawTicketData.getSeatId())){
             seatService.reserveById(rawTicketData.getSeatId());
             Ticket newTicket = new Ticket(null, rawTicketData.getEventId(), newVisitor.getId(), rawTicketData.getSectorId(), rawTicketData.getSeatId(), TicketStatus.CREATED, LocalDateTime.now());
-            return ticketRepository.save(newTicket);
+            Ticket createdTicket = ticketRepository.save(newTicket);
+            emailService.sendTicket(getInfo(createdTicket.getUuid()), getPdf(createdTicket.getUuid()));
+            return createdTicket;
         }else{
             throw new TicketReservationException("Данное место уже занято, выберите другое");
         }
     }
 
     @Transactional
-    public Ticket banTicketByUuid(UUID ticketUuid) throws TicketStatusChangingException {
+    public Ticket banTicketByUuid(UUID ticketUuid) throws TicketStatusChangingException, MessagingException {
         TicketStatusChangingDto changingDto = new TicketStatusChangingDto(ticketUuid, TicketStatus.BANNED);
         Ticket bannedTicket = this.changeTicketStatus(changingDto);
         seatService.unreserveById(bannedTicket.getSeatId());
+        TicketInfoDto ticketInfo = getInfo(ticketUuid);
+        ShortAdminDto admin = adminService.getAdminInfo(eventService.getFullEvent(ticketInfo.getEvent().getId()).getAdminId());
+        emailService.sendBanTicketMessage(ticketInfo, admin);
         return bannedTicket;
     }
 
     @Transactional
-    public Ticket cancelTicket(UUID ticketUuid) throws TicketStatusChangingException {
+    public Ticket cancelTicket(UUID ticketUuid) throws TicketStatusChangingException, MessagingException {
         TicketStatusChangingDto changingDto = new TicketStatusChangingDto(ticketUuid, TicketStatus.CANCELED);
         Ticket canceledTicket = this.changeTicketStatus(changingDto);
         seatService.unreserveById(canceledTicket.getSeatId());
+        TicketInfoDto ticketInfoDto = getInfo(ticketUuid);
+        emailService.sendCancelTicketMessage(ticketInfoDto);
         return canceledTicket;
     }
 
-    @Transactional
-    public Ticket checkTicketOnEnter(UUID ticketUuid) throws TicketStatusChangingException{
-        Optional<Ticket> ticket = ticketRepository.findByUuid(ticketUuid);
-        if (ticket.isPresent()){
-            Event event = eventService.getFullEvent(ticket.get().getEventId());
-            TicketStatusChangingDto changingDto = new TicketStatusChangingDto(ticketUuid, TicketStatus.USED);
-            return this.changeTicketStatus(changingDto);
-        }else{
-            throw new EntityNotFoundException("Билет не найден");
-        }
-
-    }
-
-
-    public byte[] getPdf(UUID uuid, String uri) throws IOException {
+    public byte[] getPdf(UUID uuid) throws IOException {
         Ticket ticket = getByUUID(uuid);
         Event event = eventService.getFullEvent(ticket.getEventId());
         Visitor visitor = visitorService.getVisitor(ticket.getVisitorId());
         Seat seat = seatService.getById(ticket.getSeatId());
         Sector sector = sectorService.getSector(ticket.getSectorId());
         Poster poster = posterService.getPosterOfEvent(event.getId());
-        return PdfGenerationService.generateTicketPdf(ticket, uri, visitor, event, sector, seat, path, poster);
+        return PdfGenerationService.generateTicketPdf(ticket, visitor, event, sector, seat, path, poster);
     }
-
 
     public Ticket changeTicketStatus(TicketStatusChangingDto ticketStatusChanging) throws TicketStatusChangingException {
         Ticket ticket = getByUUID(ticketStatusChanging.getTicketUUID());

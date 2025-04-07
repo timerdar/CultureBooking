@@ -1,5 +1,6 @@
 package ru.timerdar.CultureBooking.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import ru.timerdar.CultureBooking.model.Sector;
 import ru.timerdar.CultureBooking.repository.SectorRepository;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -42,5 +44,14 @@ public class SectorService {
 
     public List<Sector> getSectorsListOfEvent(Long eventId){
         return sectorRepository.findSectorsOfEvent(eventId);
+    }
+
+    public boolean sectorRefersToEvent(Long eventId, Long sectorId){
+        for (Sector sector: getSectorsListOfEvent(eventId)){
+            if ((long) sector.getId() == sectorId){
+                return true;
+            }
+        }
+        throw new EntityNotFoundException("Выбранный сектор не относится к данному мероприятию.");
     }
 }

@@ -1,6 +1,7 @@
 package ru.timerdar.CultureBooking.service;
 
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,5 +44,14 @@ public class SeatService {
 
     public List<Seat> getSeatsBySectorId(Long sectorId){
         return seatRepository.getBySectorId(sectorId);
+    }
+
+    public boolean seatRefersToSector(Long sectorId, Long seatId){
+        for (Seat seat: getSeatsBySectorId(sectorId)){
+            if ((long) seat.getId() == seatId){
+                return true;
+            }
+        }
+        throw new EntityNotFoundException("Выбранное место не относится к указанному сектору.");
     }
 }

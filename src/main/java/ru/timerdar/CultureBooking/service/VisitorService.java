@@ -18,14 +18,27 @@ public class VisitorService {
     private VisitorRepository visitorRepository;
 
     public Visitor createOrUseExistingVisitor(Visitor visitor){
-        Optional<Visitor> existingVisitor = visitorRepository.findByNameAndSurnameAndFathername(visitor.getName(), visitor.getSurname(), visitor.getFathername());
-        return existingVisitor.orElseGet(() -> visitorRepository.save(visitor));
+        if(visitor.validate()){
+            Optional<Visitor> existingVisitor = visitorRepository.findByNameAndSurnameAndFathername(visitor.getName(), visitor.getSurname(), visitor.getFathername());
+            return existingVisitor.orElseGet(() -> visitorRepository.save(visitor));
+        }else{
+            throw new IllegalArgumentException("Почта не соответствует формату. Проверьте правильность почты.");
+        }
     }
 
     public Visitor getVisitor(Long id){
         Optional<Visitor> visitor = visitorRepository.findById(id);
         if (visitor.isEmpty()){
             throw new EntityNotFoundException("Пользователь с id = " + id + " не найден");
+        }else{
+            return visitor.get();
+        }
+    }
+
+    public Visitor getVisitorByEmail(String email){
+        Optional<Visitor> visitor = visitorRepository.findByEmail(email);
+        if (visitor.isEmpty()){
+            throw new EntityNotFoundException("Пользователь с email = " + email + " не найден");
         }else{
             return visitor.get();
         }

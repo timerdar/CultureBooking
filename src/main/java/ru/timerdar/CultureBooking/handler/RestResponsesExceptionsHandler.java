@@ -1,6 +1,7 @@
 package ru.timerdar.CultureBooking.handler;
 
 import io.jsonwebtoken.JwtException;
+import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,10 +13,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import ru.timerdar.CultureBooking.dto.ErrorMessage;
-import ru.timerdar.CultureBooking.exceptions.ExpJwtException;
-import ru.timerdar.CultureBooking.exceptions.TicketReservationException;
-import ru.timerdar.CultureBooking.exceptions.TicketStatusChangingException;
-import ru.timerdar.CultureBooking.exceptions.WrongPasswordException;
+import ru.timerdar.CultureBooking.exceptions.*;
 
 import java.io.IOException;
 
@@ -30,7 +28,7 @@ public class RestResponsesExceptionsHandler {
         return new ResponseEntity<>(new ErrorMessage("Not found", ex.getMessage(), webRequest.getDescription(false)), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({IllegalArgumentException.class})
+    @ExceptionHandler({IllegalArgumentException.class, MessagingException.class})
     public ResponseEntity<ErrorMessage> illegalArgsExceptionHandle(Exception ex, WebRequest webRequest){
         log.error("Неверные данные: {}", ex.getMessage(), ex);
         return new ResponseEntity<>(new ErrorMessage("Bad Request", ex.getMessage(), webRequest.getDescription(false)), HttpStatus.BAD_REQUEST);
@@ -59,6 +57,7 @@ public class RestResponsesExceptionsHandler {
         log.error("Глобальная ошибка: {}", ex.getMessage(), ex);
         return new ResponseEntity<>(new ErrorMessage("Unexpected error", ex.getMessage(), webRequest.getDescription(false)), HttpStatus.BAD_REQUEST);
     }
+
 
 
 }
